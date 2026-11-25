@@ -11,7 +11,7 @@
 .bk-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: var(--gap-m); }
 .bk-idea { display: grid; gap: var(--gap-m); }
 .bk-idea__media { position: relative; }
-.bk-idea__mark { position: absolute; width: 26%; left: 48.8%; top: 54%; transform: translate(-50%, -50%); color: var(--cream); }
+.bk-idea__mark { position: absolute; width: 34%; left: 48.8%; top: 54%; transform: translate(-50%, -50%); color: var(--cream); }
 @media (min-width: 1025px) { .bk-idea { grid-template-columns: 5fr 7fr; align-items: center; } .bk-idea > p.soft { grid-column: 2; } }
 
 .bk-logos { display: grid; gap: var(--gutter); }

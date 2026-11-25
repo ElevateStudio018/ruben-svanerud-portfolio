@@ -11,8 +11,8 @@
 <section class="hero" aria-label="Introduction">
   <div class="hero__card on-photo" data-focus="{{ hero_d.focus|join(',') }}">
     <div class="hero__media">{{ m.img(hero_d.img, 'max(100vw, 178vh)', eager=True, pos=(hero_d.focus[0] * 100)|round(1)|string + '% ' + ((hero_d.focus[1] * 100)|round(1)|string) + '%') }}</div>
-    <div class="hero__frame" aria-hidden="true">{{ svg('symbol') }}</div>
-    <p class="chip hero__caption">Still from For the Love of Ski</p>
+    <div class="hero__frame" aria-hidden="true">{{ svg('symbol-open') }}</div>
+    <p class="chip hero__caption">Through the lens: still from For the Love of Ski</p>
     <div class="hero__bottom">
       <h1 class="hero__name">{{ svg('wordmark', label='Ruben Svanerud') }}</h1>
       <div class="hero__row">

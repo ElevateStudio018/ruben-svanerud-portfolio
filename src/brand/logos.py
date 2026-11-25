@@ -2,8 +2,8 @@
 """Ruben Svanerud logo suite, generated as clean SVG.
 
 - Type set in Figtree (OFL) via HarfBuzz shaping, converted to outlines (no font needed to display).
-- The symbol ("the frame") is four hand-shaped corner strokes: a viewfinder that also reads as a
-  four-leaf/snow-crystal mark. Built numerically so widths swell at the ends like a brush stroke.
+- The symbol is a soft, slightly hand-made camera (shapely geometry). Its lens centre is the centre of the box,
+  so it can sit with the lens over a subject.
 - "rubens.cut" gets a literal cut: a thin diagonal slice through "cut", top half nudged right.
 
 usage: python3 src/brand/logos.py        -> brand/logos/*.svg (+ currentColor copies in assets/logo/ for inline use)
@@ -65,66 +65,60 @@ def metrics(weight=700, size=100):
     return {'cap': os2.sCapHeight * size / upm, 'x': os2.sxHeight * size / upm,
             'asc': tt['hhea'].ascent * size / upm, 'desc': -tt['hhea'].descent * size / upm}
 
-# ---------------------------------------------------------------- the frame symbol
-def _corner_outline(seed=0):
-    """Top-left corner stroke as a closed polygon in a 0..100 box.
-    Centerline: short vertical arm -> wide rounded bend -> short horizontal arm.
-    Thin at the bend, swelling to soft round lobes at both ends (brush / petal feel)."""
-    R, L = 14.0, 2.0                 # bend radius, straight arm length
-    C = 22.0 + R                      # bend centre (C, C)
-    def centre(t):
-        A = math.pi / 2 * R
-        total = L + A + L
-        s = t * total
-        if s < L:
-            return (22.0, C + L - s), (0.0, -1.0)
-        s -= L
-        if s < A:
-            a = math.pi + s / R
-            return (C + R * math.cos(a), C + R * math.sin(a)), (-math.sin(a), math.cos(a))
-        s -= A
-        return (C + s, 22.0), (1.0, 0.0)
-    def width(t):
-        return 13.4 + 3.4 * (abs(2 * t - 1) ** 3) + 0.5 * math.sin(6 * t + seed) + 0.3 * math.sin(15 * t + 2 * seed)
-    N = 120
-    left, right = [], []
-    for i in range(N + 1):
-        t = i / N
-        (px, py), (tx, ty) = centre(t)
-        nx, ny = -ty, tx
-        w = width(t)
-        left.append((px + nx * w / 2, py + ny * w / 2))
-        right.append((px - nx * w / 2, py - ny * w / 2))
-    def cap(p_end, tangent, w, outward):
-        cx_, cy_ = p_end
-        tx, ty = tangent
-        base = math.atan2(ty, tx) + (0 if outward else math.pi)
-        return [(cx_ + w / 2 * math.cos(base + a), cy_ + w / 2 * math.sin(base + a))
-                for a in [math.pi / 2 - k * math.pi / 16 for k in range(17)]]
-    (p0, t0), (p1, t1) = centre(0), centre(1)
-    poly = left + cap(p1, t1, width(1), True)[1:-1] + right[::-1] + cap(p0, t0, width(0), False)[1:-1]
-    return poly
+# ---------------------------------------------------------------- the camera symbol
+from shapely.geometry import Point, Polygon, box
+from shapely.ops import unary_union
+from shapely.geometry.polygon import orient
 
 
-def _rot(p, deg, c=(50, 50)):
-    a = math.radians(deg)
-    x, y = p[0] - c[0], p[1] - c[1]
-    return (c[0] + x * math.cos(a) - y * math.sin(a), c[1] + x * math.sin(a) + y * math.cos(a))
+def _rrect(x0, y0, x1, y1, r):
+    return box(x0 + r, y0 + r, x1 - r, y1 - r).buffer(r, quad_segs=24)
 
 
-SPLICE = (5.5, -5.5)   # the "cut": the top-right corner is offset up and out, like a spliced frame
+def _wobble(geom, amp, seed):
+    """Hand-made feel: nudge every outline point a little, smoothly around the centre."""
+    cx, cy = 50.0, 50.0
+    def f(coords):
+        out = []
+        for x, y in coords:
+            a = math.atan2(y - cy, x - cx)
+            k = amp * (math.sin(5 * a + seed) * 0.6 + math.sin(11 * a + 2 * seed) * 0.4)
+            d = math.hypot(x - cx, y - cy) or 1
+            out.append((x + (x - cx) / d * k, y + (y - cy) / d * k))
+        return out
+    return Polygon(f(geom.exterior.coords), [f(i.coords) for i in geom.interiors])
 
 
-def symbol_path(x=0, y=0, size=100):
+def _camera(open_lens=False):
+    """A soft, slightly hand-made camera in a 0..100 box. The lens centre is exactly (50, 50), so the symbol
+    can be placed with its lens over a subject (the cable cars on the home page)."""
+    body = _rrect(7, 23, 93, 77, 17)
+    hump = _rrect(17, 11, 45, 32, 8)          # viewfinder
+    button = _rrect(66, 15, 80, 28, 4.5)      # shutter
+    shell = _wobble(unary_union([body, hump, button]), 0.55, 0.7)
+    lens = Point(50, 50).buffer(21.5, quad_segs=40)
+    if open_lens:      # for use on photos: the subject shows through the lens
+        return shell.difference(lens)
+    glass = Point(50, 50).buffer(12.5, quad_segs=40).difference(Point(54.6, 45.4).buffer(3.6, quad_segs=20))
+    return unary_union([shell.difference(lens), glass])
+
+
+_CAMERA = _camera()
+_CAMERA_OPEN = _camera(open_lens=True)
+
+
+def symbol_path(x=0, y=0, size=100, open_lens=False):
     s = size / 100.0
+    cam = _CAMERA_OPEN if open_lens else _CAMERA
+    geoms = [cam] if cam.geom_type == 'Polygon' else list(cam.geoms)
     d = []
-    for k, deg in enumerate((0, 90, 180, 270)):
-        dx, dy = SPLICE if deg == 90 else (0.0, 0.0)
-        poly = [_rot(p, deg) for p in _corner_outline(seed=k * 1.7)]
-        # keep the whole mark inside the 0..100 box: shrink slightly around the centre
-        poly = [(50 + (px - 50) * 0.9 + dx, 50 + (py - 50) * 0.9 + dy) for px, py in poly]
-        d.append('M' + ' L'.join(f'{x + px * s:.2f} {y + py * s:.2f}' for px, py in poly) + ' Z')
+    for g in geoms:
+        g = orient(g, 1.0)              # holes wind the other way, so the default nonzero fill rule works everywhere
+        for ring in [g.exterior] + list(g.interiors):
+            pts = list(ring.coords)[:-1]
+            d.append('M' + ' L'.join(f'{x + px * s:.2f} {y + py * s:.2f}' for px, py in pts) + ' Z')
     return ' '.join(d)
+
 
 # ---------------------------------------------------------------- svg helpers
 def svg(w, h, body, bg=None, title='Ruben Svanerud'):
@@ -221,21 +215,21 @@ def handle(color, bg=None, dot=None):
     return svg(W, H, body, bg, 'rubens.cut')
 
 
-def symbol(color, bg=None, size=100, pad=0):
+def symbol(color, bg=None, size=100, pad=0, open_lens=False):
     S = size + pad * 2
-    return svg(S, S, f'<path fill="{color}" d="{symbol_path(pad, pad, size)}"/>', bg, 'Ruben Svanerud symbol')
+    return svg(S, S, f'<path fill="{color}" d="{symbol_path(pad, pad, size, open_lens)}"/>', bg, 'Ruben Svanerud camera symbol')
 
 
 def lockup(color, bg=None):
     size = 100
     m = metrics(700, size)
-    sym = size * 1.28
-    gap = size * 0.34
+    sym = size * 1.62
+    gap = size * 0.22
     pad = 6
     tb, w = cut_first_glyph('Ruben Svanerud', 700, size, -0.035, pad + sym + gap, pad + sym / 2 + m['cap'] / 2, color)
     W = pad * 2 + sym + gap + w
     H = pad * 2 + sym
-    body = f'<path fill="{color}" d="{symbol_path(pad, pad, sym)}"/>' + tb
+    body = f'<path fill="{color}" d="{symbol_path(pad - sym * 0.06, pad, sym)}"/>' + tb
     return svg(W, H, body, bg, 'Ruben Svanerud')
 
 
@@ -247,19 +241,19 @@ def lockup_stacked(color, bg=None):
     d1, w1 = text_path('Ruben', 700, size, tracking=-0.035, x=0, y=0)
     d2, w2 = text_path('Svanerud', 700, size, tracking=-0.035, x=0, y=0)
     W = max(w1, w2) + pad * 2
-    sym = W * 0.42
+    sym = W * 0.5
     top = pad
-    ty = top + sym + size * 0.42 + m['cap']
+    ty = top + sym * 0.8 + size * 0.42 + m['cap']
     b1, _ = cut_first_glyph('Ruben', 700, size, -0.035, pad + (W - 2 * pad - w1) / 2, ty, color)
     d2, _ = text_path('Svanerud', 700, size, tracking=-0.035, x=pad + (W - 2 * pad - w2) / 2, y=ty + lh)
     H = ty + lh + m['desc'] * 0.5 + pad
-    body = (f'<path fill="{color}" d="{symbol_path((W - sym) / 2, top, sym)}"/>' + b1 +
+    body = (f'<path fill="{color}" d="{symbol_path((W - sym) / 2, top - sym * 0.1, sym)}"/>' + b1 +
             f'<path fill="{color}" d="{d2}"/>')
     return svg(W, H, body, bg, 'Ruben Svanerud')
 
 
 def avatar(fg, bg, size=1080):
-    s = size * 0.56
+    s = size * 0.66
     return svg(size, size, f'<path fill="{fg}" d="{symbol_path((size - s) / 2, (size - s) / 2, s)}"/>', bg, 'Ruben Svanerud')
 
 
@@ -273,6 +267,7 @@ if __name__ == '__main__':
         save(f'ruben-svanerud-wordmark-stacked-{vname}.svg', wordmark(col, stacked=True))
         save(f'rubens-cut-{vname}.svg', handle(col))
         save(f'symbol-{vname}.svg', symbol(col))
+        save(f'symbol-open-{vname}.svg', symbol(col, open_lens=True))
     save('rubens-cut-cream-signal.svg', handle(P['cream'], dot=P['signal']))
     save('rubens-cut-forest-signal.svg', handle(P['forest'], dot=P['signal']))
     save('avatar-forest.svg', avatar(P['cream'], P['forest']))
@@ -280,7 +275,7 @@ if __name__ == '__main__':
     save('avatar-cream.svg', avatar(P['forest'], P['cream']))
     # currentColor copies for inlining in the site
     os.makedirs(INLINE, exist_ok=True)
-    for name, content in {'symbol': symbol('currentColor'), 'lockup': lockup('currentColor'),
+    for name, content in {'symbol': symbol('currentColor'), 'symbol-open': symbol('currentColor', open_lens=True), 'lockup': lockup('currentColor'),
                           'wordmark': wordmark('currentColor'), 'wordmark-stacked': wordmark('currentColor', stacked=True),
                           'handle': handle('currentColor', dot='var(--signal, #e5432d)')}.items():
         with open(os.path.join(INLINE, name + '.svg'), 'w') as f:
