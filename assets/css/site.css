@@ -46,7 +46,7 @@ figure { margin: 0; }
   background: rgba(14, 26, 20, 0.07); font-size: var(--t-micro); font-weight: 500; line-height: 1.2; white-space: nowrap;
 }
 .tone-forest .chip, .tone-pine .chip { background: rgba(242, 235, 221, 0.16); color: var(--cream); }
-.on-photo .chip, .pj-hero__top .chip, .hero__caption { background: rgba(10, 28, 20, 0.62); color: var(--cream); -webkit-backdrop-filter: none; }
+.on-photo .chip, .pj-hero__top .chip { background: rgba(10, 28, 20, 0.62); color: var(--cream); -webkit-backdrop-filter: none; }
 .chips--row { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
 .chips--row::-webkit-scrollbar { display: none; }
 @media (max-width: 1024px) { .tile .chip--kind { display: none; } }
@@ -148,19 +148,10 @@ a:hover .zoom img, a:focus-visible .zoom img { transform: scale(1.04); }
   background: linear-gradient(to top, rgba(var(--scrim), 0.62) 0%, rgba(var(--scrim), 0.12) 34%, rgba(var(--scrim), 0) 52%),
               linear-gradient(to bottom, rgba(var(--scrim), 0.34) 0%, rgba(var(--scrim), 0) 18%);
 }
-.hero__frame {
-  position: absolute; z-index: 2; left: 50%; top: 30%; width: min(34vh, 46vw); height: auto; color: var(--cream);
-  transform: translate(-50%, -50%); filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.10));
-  animation: frame-in 1200ms var(--ease) 200ms both;
-}
-@keyframes frame-in { from { opacity: 0; transform: translate(-50%, -50%) scale(1.12); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
 .hero__bottom { position: absolute; z-index: 3; left: var(--edge); right: var(--edge); bottom: clamp(1rem, 3vw, 2.25rem); display: grid; gap: 1.1rem; }
 .hero__name svg { width: min(100%, 44rem); height: auto; color: var(--cream); }
 .hero__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.9rem 1.5rem; }
-.hero__caption { position: absolute; z-index: 3; top: calc(var(--nav-h) + 0.4rem); right: calc(var(--edge) + 0.25rem); display: none; min-height: 40px; transition: background-color var(--dur-ui) linear; }
-.hero__caption:hover { background: var(--forest); }
 @media (min-width: 768px) {
-  .hero__caption { display: inline-flex; }
   .hero__name svg { width: min(62vw, 52rem); }
 }
 

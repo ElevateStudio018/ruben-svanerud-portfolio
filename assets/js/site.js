@@ -33,27 +33,6 @@
     });
   }
 
-  /* hero: place the frame symbol around the focal point of the photo (the cable cars) */
-  var card = doc.querySelector('.hero__card[data-focus]');
-  if (card) {
-    var frame = card.querySelector('.hero__frame');
-    var img = card.querySelector('.hero__media img');
-    var placeFrame = function () {
-      if (!img || !img.naturalWidth) return;
-      var f = (card.getAttribute('data-focus') || '0.5,0.5').split(',').map(Number);
-      var W = card.clientWidth, H = card.clientHeight;
-      var iw = img.naturalWidth, ih = img.naturalHeight;
-      var s = Math.max(W / iw, H / ih);
-      var x = (W - iw * s) / 2 + f[0] * iw * s;
-      var y = (H - ih * s) / 2 + f[1] * ih * s;
-      frame.style.left = (x / W * 100) + '%';
-      frame.style.top = (y / H * 100) + '%';
-      frame.style.width = (W < 700 ? Math.min(W * 0.34, 140) : Math.min(H * 0.24, W * 0.16)) + 'px';
-    };
-    if (img.complete) placeFrame(); else img.addEventListener('load', placeFrame);
-    window.addEventListener('resize', placeFrame);
-  }
-
   /* stills masonry: put each picture in the shortest column (keeps columns even) */
   var mason = doc.querySelector('[data-masonry]');
   if (mason) {

@@ -41,8 +41,8 @@ python3 src/brand/logos.py && python3 src/brand/shapes.py && python3 src/brand/r
   typographic sections, tables, text lists, centred minimal sections and split image/text heroes.
   Do not hard-code values in components; add a token instead.
 - **Logo.** The symbol is a lens aperture drawn as five soft, swirling petals around a five-sided opening: a flower or
-  clover at first (the reference vibe), a camera to anyone who has held one (brand page section "The idea", linked from the home hero chip). Put it on calm parts of
-  photos (`HERO.focus` in `src/site_data.py`), never over faces. The "cut" lives in the type (the R and rubens.cut).
+  clover at first (the reference vibe), a camera to anyone who has held one (brand page section "The idea"). The home hero shows the photo and the wordmark only, no symbol in the image.
+  When the symbol sits on a photo, put it on a calm part, never over faces. The "cut" lives in the type (the R and rubens.cut).
   Never redraw the logo by hand – change `src/brand/logos.py` and regenerate.
 - **Motion.** One entrance pattern (`data-reveal`, 560 ms, once). No parallax on text and no scroll-jacking.
   `prefers-reduced-motion` must give a complete static page.
