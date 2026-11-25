@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{%- import 'macros.html' as m with context -%}
+{% block main %}
+<header class="wrap grid page-head">
+  <h1 class="page-title">Projects<sup>{{ '%02d' % projects|length }}</sup></h1>
+  <p class="page-head__intro">Films and photo series from 2026: a ski season, a YouTube shoot in Milan, reefs, ringside and Kebnekaise.</p>
+</header>
+
+<ol class="wrap plist">
+  {%- for pr in projects %}
+  <li data-reveal>
+    <a class="prow" href="projects/{{ pr.slug }}.html">
+      <span class="micro prow__num">{{ '%02d' % loop.index }}</span>
+      <div class="prow__text">
+        <h2 class="prow__title">{% if pr.eyebrow %}<span class="prow__eyebrow">{{ pr.eyebrow }}</span>{% endif %}<span class="feat__title" style="font-size:inherit"><span>{{ pr.title|keep }}</span></span></h2>
+        <p class="micro">{{ m.segs([pr.kind, pr.location, pr.year]) }}</p>
+      </div>
+      <div class="prow__media frame frame--1610 zoom">{{ m.img(pr.thumb, '(min-width: 768px) 46vw, 100vw', pos=('50% 35%' if pr.thumb == 'box-win' else None)) }}</div>
+    </a>
+  </li>
+  {%- endfor %}
+</ol>
+
+<p class="wrap plist__more">More short-form work on <a class="link ext" href="{{ person.social[0].url }}" rel="noopener" target="_blank">Instagram</a> and <a class="link ext" href="{{ person.social[1].url }}" rel="noopener" target="_blank">TikTok</a>.</p>
+{% endblock %}

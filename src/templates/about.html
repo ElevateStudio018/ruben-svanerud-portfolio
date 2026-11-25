@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{%- import 'macros.html' as m with context -%}
+{% block main %}
+<header class="wrap grid page-head">
+  <h1 class="page-title about-title">Filmmaker and photographer in Uppsala and Stockholm.</h1>
+</header>
+
+<section class="about" aria-label="About Ruben">
+  <figure class="about__media" style="margin:0">
+    <div class="frame frame--45">{{ m.img('box-rig-crop', '(min-width: 900px) 50vw, 100vw') }}</div>
+    <figcaption class="micro cap">Behind the camera, EM26 Is Next</figcaption>
+  </figure>
+  <div class="about__body">
+    <p data-reveal>Ruben Svanerud makes films and photographs. Most of the work happens on the move: on skis, at ringside, underwater and in the mountains.</p>
+    <p data-reveal>He shoots and edits his own work. His short film <a href="projects/for-the-love-of-ski.html">For the Love of Ski</a> was also his entry to Alpingaraget’s video competition Vinter Edit 2026. In Milan he filmed and edited the first episode of <a href="projects/betting-everything-on-popcorn.html">Mr. Popcorn’s YouTube series</a>, which he counts as his best work so far.</p>
+    <p data-reveal>Alongside the longer films he makes short-form video for Instagram, TikTok and YouTube, and he is open to working with brands and people.</p>
+    <dl class="facts" data-reveal>
+      <div><dt class="micro">Based in</dt><dd>{{ person.based }}</dd></div>
+      <div><dt class="micro">Work</dt><dd>Film, photo, editing</dd></div>
+      <div><dt class="micro">Edits in</dt><dd>DaVinci Resolve</dd></div>
+      <div><dt class="micro">Elsewhere</dt><dd>{% for s in person.social %}<a href="{{ s.url }}" rel="noopener" target="_blank">{{ s.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</dd></div>
+      <div><dt class="micro">Contact</dt><dd><a href="mailto:{{ person.email }}">{{ person.email }}</a></dd></div>
+    </dl>
+  </div>
+</section>
+
+<figure class="bleed" style="margin-inline:0">
+  <div class="frame frame--169" data-reveal>{{ m.img('dive-wreck', '100vw') }}</div>
+  <figcaption class="micro cap">From A Different Planet, 2026</figcaption>
+</figure>
+
+<section class="wrap index" aria-labelledby="index-title">
+  <div class="shead">
+    <h2 class="shead__title" id="index-title">Projects</h2>
+    <a class="link" href="projects.html">View all</a>
+  </div>
+  <ol class="index__list">
+    {%- for pr in projects %}
+    <li><a href="projects/{{ pr.slug }}.html">
+      <span class="micro">{{ '%02d' % loop.index }}</span>
+      <span class="index__title">{{ pr.title|keep }}</span>
+      <span class="micro index__kind">{{ pr.kind }}</span>
+      <span class="micro index__arw" aria-hidden="true">→</span>
+    </a></li>
+    {%- endfor %}
+  </ol>
+</section>
+{% endblock %}

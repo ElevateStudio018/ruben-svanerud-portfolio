@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{%- import 'macros.html' as m with context -%}
+{% block main %}
+<header class="wrap grid proj-head">
+  <div class="proj-head__top">
+    <a class="micro" href="../projects.html">← All projects</a>
+    <span class="micro">{{ '%02d' % num }} / {{ '%02d' % total }}</span>
+  </div>
+  <h1 class="proj-title">
+    {%- if pr.eyebrow %}<span class="proj-title__eyebrow">{{ pr.eyebrow }}</span>{% endif -%}
+    {{ pr.title|keep }}
+    {%- if pr.subtitle %}<span class="proj-title__sub">{{ pr.subtitle }}</span>{% endif -%}
+  </h1>
+  {{ m.facts(pr) }}
+  <div class="proj-lead">
+    <p>{{ pr.lead }}</p>
+    {%- if pr.primary %}
+    <p class="proj-lead__cta"><a class="btn" href="{{ pr.primary.url }}" rel="noopener" target="_blank"><span class="btn__dot" aria-hidden="true"></span>{{ pr.primary.label }}<span class="vh"> (opens in a new tab)</span><span aria-hidden="true">↗</span></a></p>
+    {%- endif %}
+  </div>
+</header>
+
+{%- if pr.youtube %}
+<section aria-label="Film">
+  <div class="video" data-yt-inline="{{ pr.youtube }}" data-title="{{ pr.title }}">
+    {{ m.img(pr.cover, '100vw', eager=True) }}
+    <a class="video__alt micro ext" href="https://www.youtube.com/watch?v={{ pr.youtube }}" rel="noopener" target="_blank">YouTube</a>
+    <button class="btn video__play" type="button"><span class="btn__dot" aria-hidden="true"></span>Play film<span class="btn__time">{{ pr.runtime }}</span></button>
+  </div>
+</section>
+{%- elif pr.cover_pair %}
+<section class="wrap" aria-label="Stills">
+  <div class="cover-pair">
+    {%- for name in pr.cover_pair %}
+    <div class="frame frame--45">{{ m.img(name, '(min-width: 768px) 35vw, 50vw', eager=loop.first, pos=pr.cover_pos[loop.index0]) }}</div>
+    {%- endfor %}
+  </div>
+  <p class="micro cap" style="text-align:right">Stills from the reels</p>
+</section>
+{%- else %}
+<section aria-label="Cover">
+  <div class="frame">{{ m.img(pr.cover, '100vw', eager=True) }}</div>
+</section>
+{%- endif %}
+
+{%- if pr.suite %}
+<section class="suite" aria-label="Images">
+  {%- for b in pr.suite %}
+  {%- if b.type == 'wide' %}
+  <figure class="blk blk--wide blk--{{ b.gap }}" style="margin-inline:0;margin-bottom:0" data-reveal>
+    <div class="frame">{{ m.img(b.img, '100vw') }}</div>
+    {%- if b.caption %}<figcaption class="micro cap blk__cap">{{ b.caption }}</figcaption>{% endif %}
+  </figure>
+  {%- elif b.type == 'inset' %}
+  <figure class="blk blk--inset blk--{{ b.gap }} wrap" style="margin-inline:0;margin-bottom:0" data-reveal>
+    <div class="frame">{{ m.img(b.img, 'calc(100vw - 2 * var(--edge))') }}</div>
+    {%- if b.caption %}<figcaption class="micro cap">{{ b.caption }}</figcaption>{% endif %}
+  </figure>
+  {%- elif b.type == 'pair' %}
+  <figure class="blk blk--pair blk--{{ b.gap }} wrap" style="margin-inline:0;margin-bottom:0" data-reveal>
+    <div class="blk__row">
+      {%- for name in b.imgs %}
+      <div class="frame">{{ m.img(name, '(min-width: 768px) 48vw, 100vw', pos=(b.pos[loop.index0] if b.pos else None)) }}</div>
+      {%- endfor %}
+    </div>
+    {%- if b.caption %}<figcaption class="micro cap">{{ b.caption }}</figcaption>{% endif %}
+  </figure>
+  {%- elif b.type == 'detail' %}
+  <figure class="blk blk--detail is-{{ b.align }} blk--{{ b.gap }} wrap" style="margin-inline:0;margin-bottom:0" data-reveal>
+    <div class="frame">{{ m.img(b.img, '(min-width: 768px) 58vw, 100vw') }}</div>
+    {%- if b.caption %}<figcaption class="micro blk__cap">{{ b.caption }}</figcaption>{% endif %}
+  </figure>
+  {%- endif %}
+  {%- endfor %}
+</section>
+{%- endif %}
+
+<section class="wrap grid watch" aria-labelledby="watch-title">
+  <h2 class="micro" id="watch-title">Watch &amp; view</h2>
+  <ul>
+    {%- for l in pr.links %}
+    <li><a href="{{ l.url }}" rel="noopener" target="_blank"><span>{{ l.label }}</span><span class="arw" aria-hidden="true">↗</span><span class="vh"> (opens in a new tab)</span></a></li>
+    {%- endfor %}
+  </ul>
+</section>
+
+<a class="wrap next" href="{{ nxt.slug }}.html">
+  <span class="micro">Next project</span>
+  <span class="next__title"><span>{{ nxt.title|keep }}</span></span>
+  <div class="frame frame--1610 zoom">{{ m.img(nxt.thumb, '(min-width: 768px) 24vw, 66vw', pos=('50% 35%' if nxt.thumb == 'box-win' else None)) }}</div>
+</a>
+{% endblock %}

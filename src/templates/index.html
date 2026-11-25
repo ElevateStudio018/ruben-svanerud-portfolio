@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{%- import 'macros.html' as m with context -%}
+{% block preload %}
+<link rel="preload" as="image" type="image/webp" media="(min-aspect-ratio: 3/4)"
+      imagesrcset="{% for w in images['ski-gondola'].sizes %}assets/img/ski-gondola-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
+      imagesizes="max(100vw, 178vh)" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(max-aspect-ratio: 3/4)"
+      imagesrcset="{% for w in images['ski-gondola-tall'].sizes %}assets/img/ski-gondola-tall-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
+      imagesizes="max(100vw, 50vh)" fetchpriority="high">
+{% endblock %}
+{% block main %}
+{%- set ski = projects[0] %}{% set pop = projects[1] %}{% set dive = projects[2] %}
+<section class="hero" aria-label="Introduction">
+  <picture class="hero__media">
+    <source media="(max-aspect-ratio: 3/4)" type="image/webp" sizes="max(100vw, 50vh)"
+            srcset="{% for w in images['ski-gondola-tall'].sizes %}assets/img/ski-gondola-tall-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}">
+    {{ m.img('ski-gondola', 'max(100vw, 178vh)', eager=True) }}
+  </picture>
+  <p class="micro hero__caption">Still from<br>For the Love of Ski, 2026</p>
+  <div class="hero__content">
+    <div class="hero__rule"></div>
+    <h1 class="hero__name"><span>Ruben</span> <span>Svanerud</span></h1>
+    <div class="hero__foot">
+      <p class="micro hero__role">{{ m.segs([person.role, 'Uppsala / Stockholm']) }}</p>
+      <div class="hero__actions">
+        <button class="btn" type="button" data-yt-dialog="{{ ski.youtube }}" data-title="{{ ski.title }}">
+          <span class="btn__dot" aria-hidden="true"></span>Play the ski film<span class="btn__time">{{ ski.runtime }}</span>
+        </button>
+        <a class="link" href="projects.html">All projects</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap grid intro" aria-labelledby="intro-label">
+  <p class="micro intro__label" id="intro-label" data-reveal>Film &amp; photo</p>
+  <p class="intro__text" data-reveal>Ruben Svanerud is a filmmaker and photographer based in Uppsala and Stockholm. He shoots and edits his own work: ski films, YouTube productions, underwater series and boxing.</p>
+  <p class="intro__more" data-reveal><a class="link" href="about.html">About Ruben →</a></p>
+</section>
+
+<section class="work" aria-labelledby="work-title">
+  <div class="wrap shead">
+    <h2 class="shead__title" id="work-title" data-reveal>Selected work</h2>
+    <a class="link" href="projects.html">All projects ({{ '%02d' % projects|length }})</a>
+  </div>
+
+  <a class="feat feat--full" href="projects/{{ ski.slug }}.html" data-reveal>
+    <div class="feat__media frame frame--169 zoom">{{ m.img(ski.thumb, '100vw') }}</div>
+    <div class="feat__cap">
+      <span class="micro feat__num">01</span>
+      <h3 class="feat__title"><span>{{ ski.title }}</span></h3>
+      <p class="micro feat__meta">{{ m.meta_line(ski) }}</p>
+    </div>
+  </a>
+
+  <a class="feat feat--right feat--b" href="projects/{{ pop.slug }}.html" data-reveal>
+    <div class="feat__media frame frame--169 zoom">{{ m.img(pop.thumb, '(min-width: 768px) 70vw, 100vw') }}</div>
+    <div class="feat__cap">
+      <span class="micro feat__num">02 · {{ pop.eyebrow }}</span>
+      <h3 class="feat__title"><span>{{ pop.title|keep }}</span></h3>
+      <p class="micro feat__meta">{{ m.segs([pop.kind, pop.client, pop.location]) }}</p>
+    </div>
+  </a>
+
+  <a class="feat feat--left" href="projects/{{ dive.slug }}.html" data-reveal>
+    <div class="feat__media frame frame--1610 zoom">{{ m.img(dive.thumb, '(min-width: 768px) 64vw, 100vw') }}</div>
+    <div class="feat__cap">
+      <span class="micro feat__num">03</span>
+      <h3 class="feat__title"><span>{{ dive.title|keep }}</span></h3>
+      <p class="micro feat__meta">{{ m.segs([dive.kind, dive.year]) }}</p>
+      <p class="feat__lead">{{ dive.lead }}</p>
+    </div>
+  </a>
+</section>
+
+<section class="wrap grid short" aria-labelledby="short-title">
+  <div class="short__text">
+    <p class="micro">Short form</p>
+    <h2 class="shead__title" id="short-title">Vertical cuts</h2>
+    <p>Reels and edits for Instagram and TikTok, alongside the longer films.</p>
+    <p class="short__links">
+      <a class="link ext" href="{{ person.social[0].url }}" rel="noopener" target="_blank">Instagram</a>
+      <a class="link ext" href="{{ person.social[1].url }}" rel="noopener" target="_blank">TikTok</a>
+    </p>
+  </div>
+  <ul class="short__list">
+    {%- for s in short_form %}
+    <li class="short__item" data-reveal>
+      <a href="{{ s.url }}" rel="noopener" target="_blank" aria-label="{{ s.label }}, {{ s.kind }} on Instagram (opens in a new tab)">
+        <div class="frame frame--45 zoom">{{ m.img(s.img, '(min-width: 768px) 22vw, 68vw', pos=s.pos) }}</div>
+        <p class="micro cap"><span>{{ s.label }}</span><span class="ext">{{ s.kind }}</span></p>
+      </a>
+    </li>
+    {%- endfor %}
+  </ul>
+</section>
+{% endblock %}

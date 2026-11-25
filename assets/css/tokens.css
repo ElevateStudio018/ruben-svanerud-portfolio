@@ -1,0 +1,70 @@
+/* Design tokens — Ruben Svanerud
+   Every colour, type size, space and timing used by site.css lives here. */
+
+@font-face {
+  font-family: "Archivo";
+  src: url("../fonts/archivo-latin-standard-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("../fonts/instrument-sans-latin-standard-normal.woff2") format("woff2");
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("../fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  /* colour */
+  --ink: #0d0d0e;
+  --ink-2: #151516;
+  --paper: #f2f1ed;
+  --paper-dim: rgba(242, 241, 237, 0.74);
+  --mute: #9a9994;
+  --line: rgba(242, 241, 237, 0.16);
+  --line-strong: rgba(242, 241, 237, 0.42);
+  --accent: #ff5533;          /* only on things you can click */
+  --scrim: 8, 8, 9;
+
+  /* type */
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --t-mega: clamp(2.9rem, 12.4vw, 14rem);
+  --t-h1: clamp(2.3rem, 8vw, 8rem);
+  --t-h2: clamp(2rem, 4.6vw, 4.5rem);
+  --t-h3: clamp(1.4rem, 2.3vw, 2.125rem);
+  --t-lead: clamp(1.45rem, 3vw, 2.75rem);
+  --t-body: 1.0625rem;
+  --t-small: 0.9375rem;
+  --t-micro: 0.75rem;
+
+  --stretch-max: 125%;
+  --stretch-wide: 112%;
+
+  /* space */
+  --edge: clamp(1.25rem, 4vw, 3.5rem);
+  --gutter: clamp(0.75rem, 1.6vw, 1.5rem);
+  --gap-xl: clamp(6.5rem, 15vw, 13rem);
+  --gap-l: clamp(4.5rem, 9vw, 8.5rem);
+  --gap-m: clamp(2.5rem, 5vw, 4.5rem);
+  --gap-s: clamp(1.25rem, 2.4vw, 2rem);
+  --gap-xs: clamp(0.75rem, 1.2vw, 1rem);
+  --measure: 34rem;
+
+  /* shape & motion */
+  --radius: 0;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --dur-in: 560ms;
+  --dur-ui: 150ms;
+  --nav-h: 4.25rem;
+}
