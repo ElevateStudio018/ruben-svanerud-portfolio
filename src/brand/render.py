@@ -47,7 +47,7 @@ APPLICATIONS = {
     # name: (width, height, transparent, html body)
     'instagram-avatar': (1080, 1080, False, f"""
       <div style="width:1080px;height:1080px;background:{C['forest']};display:grid;place-items:center;border-radius:0">
-        <div style="width:640px">{inline('symbol', C['cream'])}</div></div>"""),
+        <div style="width:560px">{inline('symbol', C['cream'])}</div></div>"""),
     'youtube-banner': (2560, 1440, False, f"""
       <div style="position:relative;width:2560px;height:1440px;background:{C['forest']};overflow:hidden">
         <div style="position:absolute;width:1500px;right:-260px;top:-380px">{shape(1, C['pine'])}</div>
@@ -60,7 +60,7 @@ APPLICATIONS = {
       <div style="position:relative;width:1920px;height:1080px;overflow:hidden;background:#557f96">
         <img src="{IMG('ski-gondola', 2072)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
         <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(10,28,20,.7), rgba(10,28,20,0) 55%)"></div>
-        <div style="position:absolute;left:{0.5*1920 - 150}px;top:{0.3*1080 - 150}px;width:300px">{inline('symbol', C['cream'])}</div>
+        <div style="position:absolute;left:{0.5*1920 - 110}px;top:{0.3*1080 - 110}px;width:220px">{inline('symbol', C['cream'])}</div>
         <div style="position:absolute;left:96px;right:96px;bottom:84px;display:flex;justify-content:space-between;align-items:end">
           <div style="width:700px">{inline('handle', C['cream'])}</div>
           <p style="color:{C['cream']};font-size:38px;font-weight:600;text-align:right;line-height:1.35">Instagram &amp; TikTok @rubens.cut<br>YouTube @RubensCut</p>
@@ -68,7 +68,7 @@ APPLICATIONS = {
     'lower-third': (1920, 1080, True, f"""
       <div style="position:relative;width:1920px;height:1080px">
         <div style="position:absolute;left:96px;bottom:110px;display:flex;align-items:center;gap:26px;background:{C['cream']};border-radius:999px;padding:22px 44px 22px 26px">
-          <div style="width:84px;height:84px;border-radius:50%;background:{C['forest']};display:grid;place-items:center"><div style="width:58px">{inline('symbol', C['cream'])}</div></div>
+          <div style="width:84px;height:84px;border-radius:50%;background:{C['forest']};display:grid;place-items:center"><div style="width:52px">{inline('symbol', C['cream'])}</div></div>
           <div><p style="font-size:48px;font-weight:700;letter-spacing:-.03em;color:{C['forest']};line-height:1.05">Ruben Svanerud</p>
           <p class="mono" style="font-size:26px;color:{C['pine']};margin-top:6px">Film &amp; photo · rubens.cut</p></div>
         </div></div>"""),
@@ -76,21 +76,21 @@ APPLICATIONS = {
       <div style="position:relative;width:1920px;height:1080px;overflow:hidden">
         <img src="{IMG('pop-station', 1456)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
         <div style="position:absolute;left:96px;bottom:110px;display:flex;align-items:center;gap:26px;background:{C['cream']};border-radius:999px;padding:22px 44px 22px 26px">
-          <div style="width:84px;height:84px;border-radius:50%;background:{C['forest']};display:grid;place-items:center"><div style="width:58px">{inline('symbol', C['cream'])}</div></div>
+          <div style="width:84px;height:84px;border-radius:50%;background:{C['forest']};display:grid;place-items:center"><div style="width:52px">{inline('symbol', C['cream'])}</div></div>
           <div><p style="font-size:48px;font-weight:700;letter-spacing:-.03em;color:{C['forest']};line-height:1.05">Ruben Svanerud</p>
           <p class="mono" style="font-size:26px;color:{C['pine']};margin-top:6px">Film &amp; photo · rubens.cut</p></div>
         </div></div>"""),
     'watermark-preview': (1080, 1080, False, f"""
       <div style="position:relative;width:1080px;height:1080px;overflow:hidden">
         <img src="{IMG('dive-wreck', 2072)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-        <div style="position:absolute;right:56px;bottom:48px;width:130px;opacity:.85">{inline('symbol', C['cream'])}</div>
+        <div style="position:absolute;right:56px;bottom:56px;width:110px;opacity:.85">{inline('symbol', C['cream'])}</div>
       </div>"""),
     'watermark': (600, 600, True, f"""
-      <div style="width:600px;height:600px;display:grid;place-items:center"><div style="width:360px;opacity:.85">{inline('symbol', C['cream'])}</div></div>"""),
+      <div style="width:600px;height:600px;display:grid;place-items:center"><div style="width:320px;opacity:.85">{inline('symbol', C['cream'])}</div></div>"""),
     'business-card-front': (1050, 600, False, f"""
       <div style="position:relative;width:1050px;height:600px;background:{C['forest']};overflow:hidden;border-radius:28px">
         <div style="position:absolute;width:640px;right:-170px;top:-190px">{shape(4, C['pine'])}</div>
-        <div style="position:absolute;left:62px;top:56px;width:130px">{inline('symbol', C['cream'])}</div>
+        <div style="position:absolute;left:66px;top:62px;width:110px">{inline('symbol', C['cream'])}</div>
         <div style="position:absolute;left:70px;bottom:62px;width:560px">{inline('wordmark-stacked', C['cream'])}</div>
       </div>"""),
     'business-card-back': (1050, 600, False, f"""
@@ -106,7 +106,7 @@ APPLICATIONS = {
       <div style="position:relative;width:1080px;height:1350px;overflow:hidden;background:{C['forest']}">
         <img src="{IMG('dive-reef', 2072)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:52% 50%">
         <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(10,28,20,.6), rgba(10,28,20,0) 45%)"></div>
-        <div style="position:absolute;left:50%;top:26%;transform:translate(-50%,-50%);width:280px">{inline('symbol', C['cream'])}</div>
+        <div style="position:absolute;left:50%;top:26%;transform:translate(-50%,-50%);width:210px">{inline('symbol', C['cream'])}</div>
         <div style="position:absolute;left:64px;right:64px;bottom:64px;display:flex;justify-content:space-between;align-items:end">
           <p style="color:{C['cream']};font-size:64px;font-weight:700;letter-spacing:-.04em;line-height:1">A Different<br>Planet</p>
           <div style="width:330px">{inline('handle', C['cream'])}</div>

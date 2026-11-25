@@ -2,7 +2,7 @@
 """Ruben Svanerud logo suite, generated as clean SVG.
 
 - Type set in Figtree (OFL) via HarfBuzz shaping, converted to outlines (no font needed to display).
-- The symbol is a rune that hides a camera on a tripod seen from the front (painted strokes, shapely geometry).
+- The symbol is a lens aperture drawn as five soft, swirling petals (a flower first, an aperture second).
 - "rubens.cut" gets a literal cut: a thin diagonal slice through "cut", top half nudged right.
 
 usage: python3 src/brand/logos.py        -> brand/logos/*.svg (+ currentColor copies in assets/logo/ for inline use)
@@ -64,51 +64,25 @@ def metrics(weight=700, size=100):
     return {'cap': os2.sCapHeight * size / upm, 'x': os2.sxHeight * size / upm,
             'asc': tt['hhea'].ascent * size / upm, 'desc': -tt['hhea'].descent * size / upm}
 
-# ---------------------------------------------------------------- the symbol: a camera rune
-# At first glance a petroglyph / branding-iron rune (a figure with its arms up). Decoded, it is a camera on a
-# tripod seen from the front: two brackets make the LENS, the dot is the GLASS, the short stroke on top is the
-# VIEWFINDER, the arms are the rig's HANDLES, and the brackets step down into a TRIPOD with the middle stroke.
+# ---------------------------------------------------------------- the symbol: the aperture
+# Five soft petals swirling around a five-sided opening. At first a flower or a clover (the reference vibe);
+# look again and it is the iris inside a lens, where the light gets in. Slightly hand-made edge.
 import random
-from shapely.geometry import Point, LineString, Polygon
+from shapely.geometry import Point, Polygon, LineString
 from shapely.ops import unary_union
 from shapely.geometry.polygon import orient
 
 
-def _cubic(p0, c1, c2, p3, n=40):
-    out = []
-    for i in range(n + 1):
-        t = i / n; mt = 1 - t
-        out.append((mt**3 * p0[0] + 3 * mt * mt * t * c1[0] + 3 * mt * t * t * c2[0] + t**3 * p3[0],
-                    mt**3 * p0[1] + 3 * mt * mt * t * c1[1] + 3 * mt * t * t * c2[1] + t**3 * p3[1]))
-    return out
+def _flower(R=43.0, amp=3.2, lobes=5, phase=math.radians(-54)):
+    pts = []
+    for i in range(720):
+        a = 2 * math.pi * i / 720
+        r = R + amp * math.cos(lobes * a + phase)
+        pts.append((50 + r * math.cos(a), 50 + r * math.sin(a)))
+    return Polygon(pts)
 
 
-def _chain(*segs):
-    pts = list(segs[0])
-    for sg in segs[1:]:
-        pts += list(sg)[1:]
-    return pts
-
-
-def _mirror(pts):
-    return [(100 - x, y) for x, y in pts]
-
-
-def _brush(pts, w, seed=0, swell=0.10, ends=0.12):
-    """Painted stroke: hulls of consecutive discs whose radius breathes along the stroke."""
-    rnd = random.Random(seed)
-    ph1, ph2 = rnd.random() * 6.28, rnd.random() * 6.28
-    n = len(pts)
-    discs = []
-    for i, (x, y) in enumerate(pts):
-        t = i / (n - 1)
-        r = w / 2 * (1 + swell * 0.7 * math.sin(t * 7 + ph1) + swell * 0.5 * math.sin(t * 17 + ph2) + ends * (abs(2 * t - 1) ** 6))
-        discs.append(Point(x, y).buffer(r, quad_segs=10))
-    return unary_union([unary_union([discs[i], discs[i + 1]]).convex_hull for i in range(n - 1)])
-
-
-def _grain(geom, amp=0.42, seed=1):
-    """Dry-brush edge, like a hand-painted or branded mark."""
+def _hand(g, amp=0.18, seed=3):
     rnd = random.Random(seed)
     def ring(coords):
         pts = list(LineString(coords).segmentize(0.6).coords)[:-1]
@@ -117,29 +91,40 @@ def _grain(geom, amp=0.42, seed=1):
         for i, (x, y) in enumerate(pts):
             (px, py), (qx, qy) = pts[i - 1], pts[(i + 1) % n]
             tx, ty = qx - px, qy - py; L = math.hypot(tx, ty) or 1
-            k = amp * (0.65 * math.sin(i * 0.6 * 0.45 + ph[0]) + 0.35 * math.sin(i * 0.6 * 1.25 + ph[1]))
+            k = amp * (0.65 * math.sin(i * 0.27 + ph[0]) + 0.35 * math.sin(i * 0.75 + ph[1]))
             out.append((x + ty / L * k, y - tx / L * k))
         return out
-    polys = [geom] if geom.geom_type == 'Polygon' else list(geom.geoms)
+    polys = [g] if g.geom_type == 'Polygon' else list(g.geoms)
     return unary_union([Polygon(ring(p.exterior.coords), [ring(i.coords) for i in p.interiors]).buffer(0) for p in polys])
 
 
-def _rune_parts(w=8.0, seed=2):
-    arm = _cubic((73, 9), (70, 16), (64, 22), (57.5, 25.5))
-    arc = _cubic((57.5, 25.5), (72, 30), (72, 54), (58, 60.5))
-    leg = _cubic((58, 60.5), (64, 70), (72, 81), (79, 94))
-    return {
-        'handles': unary_union([_brush(arm, w, seed), _brush(_mirror(arm), w, seed + 11)]),
-        'lens': unary_union([_brush(arc, w, seed + 1), _brush(_mirror(arc), w, seed + 12)]),
-        'glass': Point(50, 43).buffer(w * 0.62, quad_segs=16),
-        'viewfinder': _brush(_cubic((50, 5), (50, 10), (50, 15), (50, 21)), w * 0.95, seed + 5),
-        'tripod': unary_union([_brush(leg, w, seed + 2), _brush(_mirror(leg), w, seed + 13),
-                               _brush(_cubic((50, 62), (50, 72), (50.5, 84), (50, 95)), w, seed + 3)]),
-    }
+def _aperture(blades=5, hole=13.5, gap=3.8, twist=-90.0, soft=3.4, swirl=0.55):
+    outline = _flower()
+    verts = [(50 + hole * math.cos(math.radians(360 / blades * k + twist)),
+              50 + hole * math.sin(math.radians(360 / blades * k + twist))) for k in range(blades)]
+    cuts = []
+    for k in range(blades):
+        x0, y0 = verts[k]
+        x1, y1 = verts[(k + 1) % blades]
+        dx, dy = x1 - x0, y1 - y0
+        L = math.hypot(dx, dy); dx, dy = dx / L, dy / L
+        pts = []
+        t0 = L / 70                              # the slit runs along the opening's edge first, then bends: the petals swirl
+        x, y = x0, y0
+        pts.append((x, y))
+        for i in range(1, 81):
+            t = i / 80
+            ang = swirl * max(0.0, (t - t0) / (1 - t0))
+            step = 70 / 80
+            x += (dx * math.cos(ang) - dy * math.sin(ang)) * step
+            y += (dx * math.sin(ang) + dy * math.cos(ang)) * step
+            pts.append((x, y))
+        cuts.append(LineString(pts).buffer(gap / 2, cap_style=2, join_style=1))
+    g = outline.difference(Polygon(verts)).difference(unary_union(cuts))
+    return _hand(g.buffer(-soft, quad_segs=16).buffer(soft, quad_segs=16), 0.07)
 
 
-_PARTS = _rune_parts()
-_RUNE = _grain(unary_union(list(_PARTS.values())), 0.5, 2)
+_MARK = _aperture()
 
 
 def _geom_path(geom, x, y, s):
@@ -154,14 +139,7 @@ def _geom_path(geom, x, y, s):
 
 
 def symbol_path(x=0, y=0, size=100):
-    return _geom_path(_RUNE, x, y, size / 100.0)
-
-
-def symbol_parts_svg():
-    """The rune split into its camera parts (classes p-lens, p-glass, p-viewfinder, p-handles, p-tripod)."""
-    body = ''.join(f'<path class="p-{k}" fill="currentColor" d="{_geom_path(_grain(g, 0.5, 2), 0, 0, 1.0)}"/>'
-                   for k, g in _PARTS.items())
-    return svg(100, 100, body, None, 'The Ruben Svanerud mark, split into the parts of a camera')
+    return _geom_path(_MARK, x, y, size / 100.0)
 
 
 # ---------------------------------------------------------------- svg helpers
@@ -267,13 +245,13 @@ def symbol(color, bg=None, size=100, pad=0):
 def lockup(color, bg=None):
     size = 100
     m = metrics(700, size)
-    sym = size * 1.18
-    gap = size * 0.2
+    sym = size * 0.98
+    gap = size * 0.24
     pad = 6
     tb, w = cut_first_glyph('Ruben Svanerud', 700, size, -0.035, pad + sym + gap, pad + sym / 2 + m['cap'] / 2, color)
     W = pad * 2 + sym + gap + w
     H = pad * 2 + sym
-    body = f'<path fill="{color}" d="{symbol_path(pad - sym * 0.1, pad, sym)}"/>' + tb
+    body = f'<path fill="{color}" d="{symbol_path(pad - sym * 0.04, pad, sym)}"/>' + tb
     return svg(W, H, body, bg, 'Ruben Svanerud')
 
 
@@ -285,7 +263,7 @@ def lockup_stacked(color, bg=None):
     d1, w1 = text_path('Ruben', 700, size, tracking=-0.035, x=0, y=0)
     d2, w2 = text_path('Svanerud', 700, size, tracking=-0.035, x=0, y=0)
     W = max(w1, w2) + pad * 2
-    sym = W * 0.4
+    sym = W * 0.34
     top = pad
     ty = top + sym + size * 0.3 + m['cap']
     b1, _ = cut_first_glyph('Ruben', 700, size, -0.035, pad + (W - 2 * pad - w1) / 2, ty, color)
@@ -297,7 +275,7 @@ def lockup_stacked(color, bg=None):
 
 
 def avatar(fg, bg, size=1080):
-    s = size * 0.62
+    s = size * 0.5
     return svg(size, size, f'<path fill="{fg}" d="{symbol_path((size - s) / 2, (size - s) / 2, s)}"/>', bg, 'Ruben Svanerud')
 
 
@@ -318,7 +296,7 @@ if __name__ == '__main__':
     save('avatar-cream.svg', avatar(P['forest'], P['cream']))
     # currentColor copies for inlining in the site
     os.makedirs(INLINE, exist_ok=True)
-    for name, content in {'symbol': symbol('currentColor'),  'symbol-parts': symbol_parts_svg(), 'lockup': lockup('currentColor'),
+    for name, content in {'symbol': symbol('currentColor'), 'lockup': lockup('currentColor'),
                           'wordmark': wordmark('currentColor'), 'wordmark-stacked': wordmark('currentColor', stacked=True),
                           'handle': handle('currentColor', dot='var(--signal, #e5432d)')}.items():
         with open(os.path.join(INLINE, name + '.svg'), 'w') as f:
