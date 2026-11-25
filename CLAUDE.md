@@ -38,5 +38,6 @@ python3 tools/screenshots.py /tmp/shots   # optional, needs playwright + chromiu
 - Copy is in English unless Ruben asks otherwise: short and concrete, with no exclamation marks and no emoji.
 
 ## Before launch
+- Set `PREVIEW = False` in `src/site_data.py` (removes noindex and the robots.txt block).
 - Set `SITE_URL` in `src/site_data.py` and rebuild (adds canonical, OG image, sitemap).
 - Ruben confirms the use of the material and replaces the web-resolution frame grabs with original files.

@@ -4,6 +4,7 @@ the published videos themselves. Nothing invented: missing fields are omitted.
 """
 
 SITE_URL = ''  # set to e.g. 'https://example.com' (no trailing slash) to enable canonical, OG URLs and sitemap
+PREVIEW = True  # True = noindex on every page and Disallow in robots.txt. Set False when Ruben has approved and the site goes live.
 
 PERSON = {
     'name': 'Ruben Svanerud',

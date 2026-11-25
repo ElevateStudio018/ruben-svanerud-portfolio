@@ -53,7 +53,7 @@ def og_img(name):
     return f'{SITE}/assets/img/{name}-{w}.webp'
 
 
-common = dict(person=D.PERSON, projects=D.PROJECTS, images=images, alt=D.ALT, short_form=D.SHORT_FORM)
+common = dict(preview=getattr(D, 'PREVIEW', False), person=D.PERSON, projects=D.PROJECTS, images=images, alt=D.ALT, short_form=D.SHORT_FORM)
 
 
 def render(tpl, out, **ctx):
@@ -115,7 +115,7 @@ for n, pr in enumerate(D.PROJECTS):
            canonical=abs_url(f"projects/{pr['slug']}.html"), og_image=og_img(cover), jsonld=ld(work))
 
 # robots, sitemap, llms.txt
-robots = 'User-agent: *\nAllow: /\n'
+robots = 'User-agent: *\n' + ('Disallow: /\n' if getattr(D, 'PREVIEW', False) else 'Allow: /\n')
 if SITE:
     urls = ['', 'about.html', 'projects.html'] + [f"projects/{pr['slug']}.html" for pr in D.PROJECTS]
     sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

@@ -8,6 +8,9 @@
 <meta name="theme-color" content="#0d0d0e">
 <link rel="icon" href="data:,">
 <meta name="author" content="Ruben Svanerud">
+{%- if preview %}
+<meta name="robots" content="noindex, nofollow">
+{%- endif %}
 {%- if canonical %}
 <link rel="canonical" href="{{ canonical }}">
 <meta property="og:url" content="{{ canonical }}">
