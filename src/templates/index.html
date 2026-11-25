@@ -2,96 +2,181 @@
 {%- import 'macros.html' as m with context -%}
 {% block preload %}
 <link rel="preload" as="image" type="image/webp" media="(min-aspect-ratio: 3/4)"
-      imagesrcset="{% for w in images['ski-gondola'].sizes %}assets/img/ski-gondola-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
+      imagesrcset="{% for w in images[hero_d.img].sizes %}assets/img/{{ hero_d.img }}-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
       imagesizes="max(100vw, 178vh)" fetchpriority="high">
 <link rel="preload" as="image" type="image/webp" media="(max-aspect-ratio: 3/4)"
-      imagesrcset="{% for w in images['ski-gondola-tall'].sizes %}assets/img/ski-gondola-tall-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
+      imagesrcset="{% for w in images[hero_d.tall].sizes %}assets/img/{{ hero_d.tall }}-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
       imagesizes="max(100vw, 50vh)" fetchpriority="high">
 {% endblock %}
 {% block main %}
-{%- set ski = projects[0] %}{% set pop = projects[1] %}{% set dive = projects[2] %}
+{%- set ski = projects[0] %}{% set pop = projects[1] %}{% set dive = projects[2] %}{% set keb = projects[3] %}{% set box = projects[4] %}
+
 <section class="hero" aria-label="Introduction">
-  <picture class="hero__media">
-    <source media="(max-aspect-ratio: 3/4)" type="image/webp" sizes="max(100vw, 50vh)"
-            srcset="{% for w in images['ski-gondola-tall'].sizes %}assets/img/ski-gondola-tall-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}">
-    {{ m.img('ski-gondola', 'max(100vw, 178vh)', eager=True) }}
-  </picture>
-  <p class="micro hero__caption">Still from<br>For the Love of Ski, 2026</p>
-  <div class="hero__content">
-    <div class="hero__rule"></div>
-    <h1 class="hero__name"><span>Ruben</span> <span>Svanerud</span></h1>
-    <div class="hero__foot">
-      <p class="micro hero__role">{{ m.segs([person.role, 'Uppsala / Stockholm']) }}</p>
-      <div class="hero__actions">
-        <button class="btn" type="button" data-yt-dialog="{{ ski.youtube }}" data-title="{{ ski.title }}">
-          <span class="btn__dot" aria-hidden="true"></span>Play the ski film<span class="btn__time">{{ ski.runtime }}</span>
-        </button>
-        <a class="link" href="projects.html">All projects</a>
+  <div class="hero__card on-photo" data-focus="{{ hero_d.focus|join(',') }}" data-focus-tall="{{ hero_d.focus_tall|join(',') }}">
+    <picture class="hero__media">
+      <source media="(max-aspect-ratio: 3/4)" type="image/webp" sizes="max(100vw, 50vh)"
+              srcset="{% for w in images[hero_d.tall].sizes %}assets/img/{{ hero_d.tall }}-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}">
+      {{ m.img(hero_d.img, 'max(100vw, 178vh)', eager=True) }}
+    </picture>
+    <div class="hero__frame" aria-hidden="true">{{ svg('symbol') }}</div>
+    <p class="chip hero__caption">Still from For the Love of Ski</p>
+    <div class="hero__bottom">
+      <h1 class="hero__name">{{ svg('wordmark', label='Ruben Svanerud') }}</h1>
+      <div class="hero__row">
+        <ul class="chips"><li class="chip">Film &amp; photo</li><li class="chip">Uppsala / Stockholm</li></ul>
+        <div class="pills">
+          <button class="pill pill--cream" type="button" data-yt-dialog="{{ ski.youtube }}" data-title="{{ ski.title }}">
+            <span class="pill__dot" aria-hidden="true"></span>Play the ski film<span class="pill__time">{{ ski.runtime }}</span>
+          </button>
+          <a class="pill pill--ghost" href="projects.html"><span>All projects</span></a>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="wrap grid intro" aria-labelledby="intro-label">
-  <p class="micro intro__label" id="intro-label" data-reveal>Film &amp; photo</p>
-  <p class="intro__text" data-reveal>Ruben Svanerud is a filmmaker and photographer based in Uppsala and Stockholm. He shoots and edits his own work: ski films, YouTube productions, underwater series and boxing.</p>
-  <p class="intro__more" data-reveal><a class="link" href="about.html">About Ruben →</a></p>
+<section class="wrap intro" aria-labelledby="intro-text">
+  <ul class="chips intro__chips" data-reveal><li class="chip chip--leaf">Hi, I’m Ruben</li><li class="chip">Filmmaker &amp; photographer</li></ul>
+  <p class="intro__text" id="intro-text" data-reveal>I make
+    {%- for name, words in intro %}
+    <span class="inl">{{ m.img(name, '120px', alt_text='') }}</span>&nbsp;{{ words }}{% if loop.revindex == 2 %} and{% elif not loop.last %},{% endif %}
+    {%- endfor %}, from Uppsala and Stockholm. I shoot it and I cut it.</p>
+  <div class="pills intro__more" data-reveal>
+    <a class="pill pill--forest" href="about.html">About Ruben {{ m.arrow() }}</a>
+    <a class="pill pill--ghost" href="stills.html"><span>See all stills</span></a>
+  </div>
 </section>
 
-<section class="work" aria-labelledby="work-title">
-  <div class="wrap shead">
+<section class="wrap bento-sec" aria-labelledby="work-title">
+  <div class="shead">
     <h2 class="shead__title" id="work-title" data-reveal>Selected work</h2>
-    <a class="link" href="projects.html">All projects ({{ '%02d' % projects|length }})</a>
+    <a class="pill pill--ghost" href="projects.html"><span>All {{ projects|length }} projects</span></a>
   </div>
-
-  <a class="feat feat--full" href="projects/{{ ski.slug }}.html" data-reveal>
-    <div class="feat__media frame frame--169 zoom">{{ m.img(ski.thumb, '100vw') }}</div>
-    <div class="feat__cap">
-      <span class="micro feat__num">01</span>
-      <h3 class="feat__title"><span>{{ ski.title }}</span></h3>
-      <p class="micro feat__meta">{{ m.meta_line(ski) }}</p>
-    </div>
-  </a>
-
-  <a class="feat feat--right feat--b" href="projects/{{ pop.slug }}.html" data-reveal>
-    <div class="feat__media frame frame--169 zoom">{{ m.img(pop.thumb, '(min-width: 768px) 70vw, 100vw') }}</div>
-    <div class="feat__cap">
-      <span class="micro feat__num">02 · {{ pop.eyebrow }}</span>
-      <h3 class="feat__title"><span>{{ pop.title|keep }}</span></h3>
-      <p class="micro feat__meta">{{ m.segs([pop.kind, pop.client, pop.location]) }}</p>
-    </div>
-  </a>
-
-  <a class="feat feat--left" href="projects/{{ dive.slug }}.html" data-reveal>
-    <div class="feat__media frame frame--1610 zoom">{{ m.img(dive.thumb, '(min-width: 768px) 64vw, 100vw') }}</div>
-    <div class="feat__cap">
-      <span class="micro feat__num">03</span>
-      <h3 class="feat__title"><span>{{ dive.title|keep }}</span></h3>
-      <p class="micro feat__meta">{{ m.segs([dive.kind, dive.year]) }}</p>
-      <p class="feat__lead">{{ dive.lead }}</p>
-    </div>
-  </a>
+  <div class="bento">
+    {%- set layout = {0: 'tile--big', 1: 'tile--tall', 2: 'tile--tall', 3: 'tile--wide', 4: 'tile--wide'} %}
+    {%- for pr in [ski, pop, box, dive, keb] %}
+    <a class="tile {{ layout[loop.index0] }}" href="projects/{{ pr.slug }}.html" data-reveal>
+      <div class="tile__img">{{ m.img(pr.thumb, '(min-width: 768px) 25vw, 100vw' if loop.index0 in (1, 2) else '(min-width: 768px) 50vw, 100vw', pos=(pr.thumb_pos or ('62% 50%' if pr.slug == 'betting-everything-on-popcorn' else None))) }}</div>
+      <span class="tile__go" aria-hidden="true">→</span>
+      <div class="tile__body">
+        <ul class="chips">{% if pr.eyebrow %}<li class="chip">{{ pr.eyebrow }}</li>{% endif %}<li class="chip">{{ pr.kind }}</li><li class="chip">{{ pr.year }}</li></ul>
+        <h3 class="tile__title">{{ pr.title|keep }}</h3>
+      </div>
+    </a>
+    {%- endfor %}
+  </div>
 </section>
 
-<section class="wrap grid short" aria-labelledby="short-title">
-  <div class="short__text">
-    <p class="micro">Short form</p>
-    <h2 class="shead__title" id="short-title">Vertical cuts</h2>
-    <p>Reels and edits for Instagram and TikTok, alongside the longer films.</p>
-    <p class="short__links">
-      <a class="link ext" href="{{ person.social[0].url }}" rel="noopener" target="_blank">Instagram</a>
-      <a class="link ext" href="{{ person.social[1].url }}" rel="noopener" target="_blank">TikTok</a>
-    </p>
+<section class="film tone-forest" aria-labelledby="film-title">
+  <div class="film__shape" aria-hidden="true">{{ shape(1) }}</div>
+  <div class="film__shape film__shape--2" aria-hidden="true">{{ shape(3) }}</div>
+  <div class="wrap film__grid">
+    <div class="film__text" data-reveal>
+      <ul class="chips"><li class="chip chip--leaf">Short film</li><li class="chip">{{ ski.runtime }}</li><li class="chip">Vinter Edit 2026</li></ul>
+      <h2 class="film__title" id="film-title">{{ ski.title|keep }}</h2>
+      <p class="soft">{{ ski.lead }}</p>
+      <div class="pills">
+        <button class="pill pill--cream" type="button" data-yt-dialog="{{ ski.youtube }}" data-title="{{ ski.title }}"><span class="pill__dot" aria-hidden="true"></span>Play film<span class="pill__time">{{ ski.runtime }}</span></button>
+        <a class="pill pill--ghost" href="projects/{{ ski.slug }}.html"><span>About the film</span></a>
+      </div>
+    </div>
+    <div class="film__media" data-reveal>
+      <div class="ph ph--169">{{ m.img('ski-trees', '(min-width: 1025px) 55vw, 100vw') }}</div>
+      <div class="film__poster ph--916">{{ m.img('ski-poster', '(min-width: 1025px) 16vw, 30vw') }}</div>
+    </div>
   </div>
-  <ul class="short__list">
-    {%- for s in short_form %}
-    <li class="short__item" data-reveal>
-      <a href="{{ s.url }}" rel="noopener" target="_blank" aria-label="{{ s.label }}, {{ s.kind }} on Instagram (opens in a new tab)">
-        <div class="frame frame--45 zoom">{{ m.img(s.img, '(min-width: 768px) 22vw, 68vw', pos=s.pos) }}</div>
-        <p class="micro cap"><span>{{ s.label }}</span><span class="ext">{{ s.kind }}</span></p>
-      </a>
-    </li>
+</section>
+
+<section class="row-sec" aria-labelledby="stills-title">
+  <div class="wrap shead">
+    <div>
+      <h2 class="shead__title" id="stills-title" data-reveal>Stills</h2>
+      <p class="soft" style="margin-top:0.8rem">Frames from the films and photo series.</p>
+    </div>
+    <div class="pills">
+      <div class="row-ctl" data-row-for="stills-row">
+        <button type="button" data-dir="-1" aria-label="Scroll stills left">←</button>
+        <button type="button" data-dir="1" aria-label="Scroll stills right">→</button>
+      </div>
+      <a class="pill pill--ghost" href="stills.html"><span>All stills</span></a>
+    </div>
+  </div>
+  <ul class="row row--stills" id="stills-row">
+    {%- for name, slug, cap in stills[:12] %}
+    <li><figure class="still">
+      <div class="ph ph--43">{{ m.img(name, '(min-width: 1025px) 31vw, (min-width: 768px) 44vw, 78vw') }}</div>
+      <figcaption><span class="label soft">{{ cap }}</span><a href="projects/{{ slug }}.html">{{ titles[slug] }}</a></figcaption>
+    </figure></li>
     {%- endfor %}
   </ul>
+</section>
+
+<section class="wrap make" aria-labelledby="make-title">
+  <div class="shead">
+    <h2 class="shead__title" id="make-title" data-reveal>What I make</h2>
+  </div>
+  <div class="make__grid">
+    {%- for k in make %}
+    <a class="mk tone-{{ k.tone }}" href="projects/{{ k.slug }}.html" data-reveal>
+      <div class="mk__img">{{ m.img(k.img, '(min-width: 1025px) 24vw, (min-width: 768px) 48vw, 100vw', pos=k.img_pos) }}</div>
+      <div class="mk__body">
+        <span class="mk__num">0{{ loop.index }}</span>
+        <h3 class="mk__title">{{ k.title }}</h3>
+        <p>{{ k.text }}</p>
+      </div>
+    </a>
+    {%- endfor %}
+  </div>
+</section>
+
+<section class="wrap ovl" aria-labelledby="ovl-title">
+  <div class="ovl__grid">
+    <div class="ovl__media" data-reveal>
+      <div class="ph ph--43 ovl__back">{{ m.img('pop-milan', '(min-width: 1025px) 50vw, 90vw') }}</div>
+      <div class="ph ph--43 ovl__front">{{ m.img('pop-bts-room', '(min-width: 1025px) 30vw, 50vw') }}</div>
+    </div>
+    <div class="ovl__panel tone-sage" data-reveal>
+      <ul class="chips"><li class="chip chip--cream">{{ pop.eyebrow }}</li><li class="chip">{{ pop.client }}</li><li class="chip">{{ pop.location }}</li></ul>
+      <h2 class="shead__title" id="ovl-title" style="font-size:var(--t-h3)">{{ pop.title }}</h2>
+      <p class="ovl__quote">{{ quote_popcorn }}</p>
+      <p class="label">Ruben, on Instagram</p>
+      <div class="pills">
+        <button class="pill pill--forest" type="button" data-yt-dialog="{{ pop.youtube }}" data-title="{{ pop.title }}"><span class="pill__dot" aria-hidden="true"></span>Watch EP.01<span class="pill__time">{{ pop.runtime }}</span></button>
+        <a class="pill pill--ghost" href="projects/{{ pop.slug }}.html"><span>The project</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="row-sec tone-cream2" aria-labelledby="vert-title">
+  <div class="wrap shead">
+    <div>
+      <h2 class="shead__title" id="vert-title" data-reveal>Vertical cuts</h2>
+      <p class="soft" style="margin-top:0.8rem">Reels and edits for Instagram and TikTok.</p>
+    </div>
+    <div class="pills">
+      <a class="pill pill--ghost" href="{{ person.social[0].url }}" rel="noopener" target="_blank"><span>Instagram ↗</span></a>
+      <a class="pill pill--ghost" href="{{ person.social[1].url }}" rel="noopener" target="_blank"><span>TikTok ↗</span></a>
+    </div>
+  </div>
+  <ul class="row row--vert">
+    {%- for s in short_form %}
+    <li><a class="still" href="{{ s.url }}" rel="noopener" target="_blank" aria-label="{{ s.label }}, {{ s.kind }} on Instagram (opens in a new tab)">
+      <div class="ph ph--916 zoom">{{ m.img(s.img, '(min-width: 1025px) 21vw, (min-width: 768px) 30vw, 62vw', pos=s.pos) }}</div>
+      <p class="cap" style="display:flex;justify-content:space-between;gap:1rem"><b style="font-weight:600">{{ s.label }}</b><span class="label soft">{{ s.kind }} ↗</span></p>
+    </a></li>
+    {%- endfor %}
+  </ul>
+</section>
+
+<section class="cta tone-leaf" aria-labelledby="cta-title" style="margin-top:var(--gap-l)">
+  <div class="cta__shape" aria-hidden="true">{{ shape(2) }}</div>
+  <div class="cta__shape cta__shape--2" aria-hidden="true">{{ shape(1) }}</div>
+  <ul class="chips" style="position:relative"><li class="chip chip--cream">Open for work</li></ul>
+  <h2 class="cta__title" id="cta-title" data-reveal>Looking for cool people and brands to work with this winter.</h2>
+  <div class="pills">
+    <a class="pill pill--forest" href="mailto:{{ person.email }}">Email Ruben {{ m.arrow() }}</a>
+    <a class="pill pill--ghost" href="{{ person.social[0].url }}" rel="noopener" target="_blank"><span>DM on Instagram ↗</span></a>
+  </div>
 </section>
 {% endblock %}

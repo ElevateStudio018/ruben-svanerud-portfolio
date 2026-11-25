@@ -1,30 +1,28 @@
-{%- macro img(name, sizes='100vw', cls='', eager=False, pos=None) -%}
+{%- macro img(name, sizes='100vw', cls='', eager=False, pos=None, alt_text=None) -%}
 {%- set i = images[name] -%}
-{%- set top = i.sizes[-1] -%}
 {%- set fb = (i.sizes|select('le', 1600)|list)[-1] -%}
 <img src="{{ p }}assets/img/{{ name }}-{{ fb }}.webp"
      srcset="{% for w in i.sizes %}{{ p }}assets/img/{{ name }}-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
-     sizes="{{ sizes }}" width="{{ i.w }}" height="{{ i.h }}" alt="{{ alt[name] }}"
+     sizes="{{ sizes }}" width="{{ i.w }}" height="{{ i.h }}" alt="{{ alt_text if alt_text is not none else alt[name] }}"
      {%- if cls %} class="{{ cls }}"{% endif %}
      {%- if eager %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async"
      style="background:{{ i.bg }}{% if pos %};object-position:{{ pos }}{% endif %}">
 {%- endmacro -%}
 
-{%- macro facts(pr) -%}
-<dl class="proj-facts">
-  <div><dt class="micro">Type</dt><dd>{{ pr.kind }}</dd></div>
-  {%- if pr.client %}<div><dt class="micro">Client</dt><dd>{{ pr.client }}</dd></div>{% endif %}
-  {%- if pr.location %}<div><dt class="micro">Location</dt><dd>{{ pr.location }}</dd></div>{% endif %}
-  <div><dt class="micro">Year</dt><dd>{{ pr.year }}</dd></div>
-  {%- if pr.runtime %}<div><dt class="micro">Runtime</dt><dd>{{ pr.runtime }}</dd></div>{% endif %}
-  {%- if pr.credit %}<div><dt class="micro">Credit</dt><dd>{{ pr.credit }}</dd></div>{% endif %}
-</dl>
-{%- endmacro -%}
-
 {%- macro segs(items) -%}
-{%- for it in items if it %}<span class="seg">{{ it }}</span>{% if not loop.last %}<span class="sep" aria-hidden="true"> · </span>{% endif %}{% endfor -%}
+{%- for it in items if it %}<span class="seg">{{ it }}</span>{% if not loop.last %}<span aria-hidden="true"> · </span>{% endif %}{% endfor -%}
 {%- endmacro -%}
 
-{%- macro meta_line(pr) -%}
-{{ segs([pr.kind, pr.location, pr.year, pr.runtime]) }}
+{%- macro meta_line(pr) -%}{{ segs([pr.kind, pr.location, pr.year, pr.runtime]) }}{%- endmacro -%}
+
+{%- macro chips(pr, extra='') -%}
+<ul class="chips">
+  <li class="chip {{ extra }}">{{ pr.kind }}</li>
+  {%- if pr.location %}<li class="chip {{ extra }}">{{ pr.location }}</li>{% endif %}
+  <li class="chip {{ extra }}">{{ pr.year }}</li>
+  {%- if pr.runtime %}<li class="chip {{ extra }}">{{ pr.runtime }}</li>{% endif %}
+</ul>
 {%- endmacro -%}
+
+{%- macro arrow() -%}<span class="pill__arrow" aria-hidden="true">→</span>{%- endmacro -%}
+{%- macro ext() -%}<span class="vh"> (opens in a new tab)</span><span aria-hidden="true">↗</span>{%- endmacro -%}

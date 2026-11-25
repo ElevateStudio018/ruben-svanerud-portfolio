@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{{ title }}</title>
 <meta name="description" content="{{ description }}">
-<meta name="theme-color" content="#0d0d0e">
-<link rel="icon" href="data:,">
+<meta name="theme-color" content="#12392a">
+<link rel="icon" href="{{ p }}assets/logo/favicon.svg" type="image/svg+xml">
 <meta name="author" content="Ruben Svanerud">
 {%- if preview %}
 <meta name="robots" content="noindex, nofollow">
@@ -23,8 +23,7 @@
 <meta property="og:image" content="{{ og_image }}">
 {%- endif %}
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" href="{{ p }}assets/fonts/archivo-latin-standard-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{{ p }}assets/fonts/instrument-sans-latin-standard-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ p }}assets/fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 {%- block preload %}{% endblock %}
 <link rel="stylesheet" href="{{ p }}assets/css/tokens.css">
 <link rel="stylesheet" href="{{ p }}assets/css/site.css">
@@ -35,27 +34,31 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="nav{% if not hero %} is-solid{% endif %}">
-  <a class="nav__mark" href="{{ p }}index.html" aria-label="Ruben Svanerud, home">Ruben Svanerud</a>
+  <a class="nav__brand" href="{{ p }}index.html" aria-label="Ruben Svanerud, home">{{ svg('lockup') }}</a>
   <nav class="nav__links" aria-label="Main">
-    <a class="link" href="{{ p }}projects.html"{% if section == 'projects' %} aria-current="page"{% endif %}>Projects</a>
-    <a class="link" href="{{ p }}about.html"{% if section == 'about' %} aria-current="page"{% endif %}>About</a>
-    <a class="link" href="#contact">Contact</a>
+    <a href="{{ p }}projects.html"{% if section == 'projects' %} aria-current="page"{% endif %}>Projects</a>
+    <a href="{{ p }}stills.html"{% if section == 'stills' %} aria-current="page"{% endif %}>Stills</a>
+    <a href="{{ p }}about.html"{% if section == 'about' %} aria-current="page"{% endif %}>About</a>
+    <a class="nav__cta" href="#contact">Work with Ruben</a>
   </nav>
   <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
 </header>
 
 <div class="menu" id="menu" inert>
+  <div class="menu__shape" aria-hidden="true">{{ shape(2) }}</div>
   <nav class="menu__links" aria-label="Menu">
     <a href="{{ p }}index.html"{% if section == 'home' %} aria-current="page"{% endif %}>Home</a>
     <a href="{{ p }}projects.html"{% if section == 'projects' %} aria-current="page"{% endif %}>Projects</a>
+    <a href="{{ p }}stills.html"{% if section == 'stills' %} aria-current="page"{% endif %}>Stills</a>
     <a href="{{ p }}about.html"{% if section == 'about' %} aria-current="page"{% endif %}>About</a>
   </nav>
   <div class="menu__foot">
-    <p class="micro">Contact</p>
-    <a href="mailto:{{ person.email }}">{{ person.email }}</a>
-    {%- for s in person.social %}
-    <a class="ext" href="{{ s.url }}" rel="noopener" target="_blank">{{ s.name }}</a>
-    {%- endfor %}
+    <a class="pill pill--cream" href="mailto:{{ person.email }}">{{ person.email }}</a>
+    <div class="pills">
+      {%- for s in person.social %}
+      <a class="pill pill--ghost" href="{{ s.url }}" rel="noopener" target="_blank"><span>{{ s.name }}</span></a>
+      {%- endfor %}
+    </div>
   </div>
 </div>
 
@@ -63,50 +66,70 @@
 {% block main %}{% endblock %}
 </main>
 
-<footer class="foot" id="contact">
-  <div class="wrap grid foot__cta">
-    <p class="micro">Contact</p>
-    <a class="foot__mail" href="mailto:{{ person.email }}">{{ person.email }}</a>
-    <p class="foot__note">Open to collaborations with brands and people.</p>
+<footer class="foot tone-forest" id="contact">
+  <div class="foot__shape" aria-hidden="true">{{ shape(4) }}</div>
+  <div class="foot__top">
+    <h2 class="foot__say">Got a film in mind? Let’s make it.</h2>
+    <div>
+      <p class="label soft">Email</p>
+      <a class="foot__mail" href="mailto:{{ person.email }}">{{ person.email|replace("@", "@<wbr>")|safe }}</a>
+    </div>
   </div>
-  <div class="wrap grid foot__cols">
-    <div class="foot__col">
-      <p class="foot__name">{{ person.name }}</p>
+  <div class="foot__cols">
+    <div class="foot__col foot__brand">
+      <p class="label">Ruben Svanerud</p>
       <p>{{ person.role }}<br><span class="nw">{{ person.based }}</span></p>
     </div>
     <nav class="foot__col" aria-label="Footer">
-      <p class="micro">Pages</p>
-      <ul>
-        <li><a href="{{ p }}index.html">Home</a></li>
-        <li><a href="{{ p }}projects.html">Projects</a></li>
-        <li><a href="{{ p }}about.html">About</a></li>
-      </ul>
+      <p class="label">Pages</p>
+      <a href="{{ p }}index.html">Home</a>
+      <a href="{{ p }}projects.html">Projects</a>
+      <a href="{{ p }}stills.html">Stills</a>
+      <a href="{{ p }}about.html">About</a>
     </nav>
     <div class="foot__col">
-      <p class="micro">Follow</p>
-      <ul>
-        {%- for s in person.social %}
-        <li><a href="{{ s.url }}" rel="noopener" target="_blank">{{ s.name }}</a><span class="handle">{{ s.handle }}</span></li>
-        {%- endfor %}
-      </ul>
+      <p class="label">Follow</p>
+      {%- for s in person.social %}
+      <a href="{{ s.url }}" rel="noopener" target="_blank">{{ s.name }}<span class="handle">{{ s.handle }}</span></a>
+      {%- endfor %}
+    </div>
+    <div class="foot__col">
+      <p class="label">Projects</p>
+      {%- for pr in projects %}
+      <a href="{{ p }}projects/{{ pr.slug }}.html">{{ pr.title }}</a>
+      {%- endfor %}
     </div>
   </div>
-  <div class="wrap foot__base">
-    <p class="micro">© 2026 {{ person.name }}</p>
-    <a class="micro" href="#top">Back to top ↑</a>
+  <div class="foot__big" aria-hidden="true">{{ svg('wordmark') }}</div>
+  <div class="foot__base">
+    <p class="label soft">© 2026 {{ person.name }}</p>
+    <a class="label" href="#top">Back to top ↑</a>
   </div>
 </footer>
 
 {%- if dialog %}
 <dialog class="player" id="player" aria-label="Video player">
-  <div class="player__bar">
-    <p class="micro player__title"></p>
-    <div class="player__actions">
-      <a class="player__yt link ext" href="https://www.youtube.com/" rel="noopener" target="_blank">Open on YouTube</a>
-      <button class="player__close" type="button">Close</button>
+  <div class="dlg__bar">
+    <p class="label player__title"></p>
+    <div class="dlg__actions">
+      <a class="pill pill--ghost player__yt" href="https://www.youtube.com/" rel="noopener" target="_blank"><span>Open on YouTube ↗</span></a>
+      <button class="pill pill--cream player__close" type="button">Close</button>
     </div>
   </div>
   <div class="player__frame"></div>
+</dialog>
+{%- endif %}
+{%- if lightbox %}
+<dialog class="lightbox" id="lightbox" aria-label="Image viewer">
+  <div class="dlg__bar">
+    <p class="label lightbox__cap"></p>
+    <div class="dlg__actions">
+      <button class="pill pill--ghost lightbox__prev" type="button" aria-label="Previous image"><span>←</span></button>
+      <button class="pill pill--ghost lightbox__next" type="button" aria-label="Next image"><span>→</span></button>
+      <button class="pill pill--cream lightbox__close" type="button">Close</button>
+    </div>
+  </div>
+  <img alt="">
 </dialog>
 {%- endif %}
 <script src="{{ p }}assets/js/site.js" defer></script>

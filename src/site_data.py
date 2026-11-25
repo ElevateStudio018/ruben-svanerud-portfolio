@@ -35,7 +35,7 @@ ALT = {
     'pop-orange': 'Close-up of a man in glasses and a cap under orange ceiling light',
     'pop-station': 'Man in a navy cap sitting on a railway platform, talking to camera',
     'pop-bts-street': 'Behind the scenes: a man on the phone outside a shop while a camera operator films him',
-    'pop-bts-room': 'Behind the scenes: camera on a tripod with a monitor in a bright room',
+    'pop-bts-room': 'Behind the scenes: a camera on a tripod with its monitor, filming a woman by a window in Milan',
     'dive-reef': 'Diver above a coral reef in deep blue water, light falling from the surface',
     'dive-torch': 'Diver with a torch descending into dark blue water',
     'dive-wreck': 'Sunken aircraft resting on the sea floor',
@@ -49,29 +49,29 @@ ALT = {
     'keb-hike': 'Two hikers with backpacks crossing a meadow below a pyramid-shaped mountain',
 }
 
-# Suite block types: wide (edge to edge), pair (two in a row), detail (narrow, offset), inset (within margins)
+# Gallery rows on project pages: ('full', [img]) · ('half', [a, b]) · ('thirds', [a, b, c]) · ('wn', [wide, narrow])
 PROJECTS = [
     {
         'slug': 'for-the-love-of-ski',
         'title': 'For the Love of Ski',
         'kind': 'Short film',
+        'cats': ['Film'],
         'year': '2026',
         'runtime': '04:03',
         'iso_duration': 'PT4M3S',
         'credit': 'A film by Ruben',
         'lead': ("A short film cut from a season of skiing with friends. "
-                 "It was also Ruben's entry to Alpingaraget's video competition Vinter Edit 2026."),
+                 "It was also Ruben’s entry to Alpingaraget’s video competition Vinter Edit 2026."),
         'meta_desc': ("For the Love of Ski, a short film by Ruben Svanerud from a season of skiing with friends. "
                       "His entry to Alpingaraget's Vinter Edit 2026."),
         'youtube': 'hjpaJWnm0NY',
+        'poster': 'ski-gondola',
         'cover': 'ski-spin',
         'thumb': 'ski-air',
-        'suite': [
-            {'type': 'wide', 'img': 'ski-trees', 'gap': 'm'},
-            {'type': 'pair', 'imgs': ['ski-powder', 'ski-poster'], 'pos': ['8% 50%', None], 'gap': 'm',
-             'caption': 'A still from the film, and the film poster.'},
-            {'type': 'detail', 'img': 'ski-goggles', 'align': 'right', 'gap': 'l'},
-            {'type': 'wide', 'img': 'ski-air', 'gap': 'm'},
+        'gallery': [
+            ('full', ['ski-trees']),
+            ('thirds', ['ski-powder', 'ski-poster', 'ski-goggles']),
+            ('full', ['ski-air']),
         ],
         'links': [
             {'label': 'Watch on YouTube', 'url': 'https://www.youtube.com/watch?v=hjpaJWnm0NY'},
@@ -83,6 +83,7 @@ PROJECTS = [
         'eyebrow': 'EP.01',
         'title': 'Betting Everything on Popcorn',
         'kind': 'YouTube episode',
+        'cats': ['Film', 'YouTube'],
         'client': 'Mr. Popcorn',
         'location': 'Milan, Italy',
         'year': '2026',
@@ -91,20 +92,19 @@ PROJECTS = [
         'lead': ("Mr. Popcorn came to Ruben with an idea for a YouTube series. Episode one goes to Italy "
                  "to look at the machine that could start his popcorn company. "
                  "Ruben filmed and edited it in Milan, and calls it his favourite work yet."),
-        'primary': None,
         'meta_desc': ("EP.01 Betting Everything on Popcorn, a YouTube episode for Mr. Popcorn, "
                       "filmed and edited by Ruben Svanerud in Milan."),
         'youtube': 'wZorAZfUz6w',
+        'poster': 'pop-station',
         'cover': 'pop-street',
         'thumb': 'pop-street',
-        'suite': [
-            {'type': 'wide', 'img': 'pop-milan', 'gap': 'm'},
-            {'type': 'pair', 'imgs': ['pop-statue', 'pop-orange'], 'gap': 'm'},
-            {'type': 'detail', 'img': 'pop-night', 'align': 'left', 'gap': 'l'},
-            {'type': 'pair', 'imgs': ['pop-bts-street', 'pop-bts-room'], 'gap': 'xl',
-             'caption': 'Behind the scenes in Milan.'},
-            {'type': 'wide', 'img': 'pop-station', 'gap': 'm'},
+        'gallery': [
+            ('full', ['pop-milan']),
+            ('half', ['pop-statue', 'pop-orange']),
+            ('wn', ['pop-bts-room', 'pop-bts-street']),
+            ('full', ['pop-night']),
         ],
+        'gallery_caption': 'Stills from the episode, and behind the scenes in Milan.',
         'links': [
             {'label': 'Watch on YouTube', 'url': 'https://www.youtube.com/watch?v=wZorAZfUz6w'},
             {'label': 'Behind the scenes on Instagram', 'url': 'https://www.instagram.com/p/DemcnXulyCQ/'},
@@ -114,6 +114,7 @@ PROJECTS = [
         'slug': 'a-different-planet',
         'title': 'A Different Planet',
         'kind': 'Underwater photo & film',
+        'cats': ['Photo', 'Film'],
         'year': '2026',
         'lead': ("An underwater series: reefs, a sunken aircraft and a feeding sea turtle, "
                  "published as photographs and short clips."),
@@ -122,13 +123,12 @@ PROJECTS = [
         'primary': {'label': 'View the series on Instagram', 'url': 'https://www.instagram.com/p/De_md_flyqA/'},
         'cover': 'dive-reef',
         'thumb': 'dive-reef',
-        'suite': [
-            {'type': 'wide', 'img': 'dive-wreck', 'gap': 'm'},
-            {'type': 'pair', 'imgs': ['dive-torch', 'dive-coral'], 'gap': 'l'},
-            {'type': 'detail', 'img': 'dive-turtle', 'align': 'right', 'gap': 'l',
-             'caption': 'Still from the clip “Turtle munchies”.'},
-            {'type': 'wide', 'img': 'dive-surface', 'gap': 'm'},
+        'gallery': [
+            ('full', ['dive-wreck']),
+            ('half', ['dive-torch', 'dive-coral']),
+            ('wn', ['dive-surface', 'dive-turtle']),
         ],
+        'gallery_caption': 'Right: still from the clip “Turtle munchies”.',
         'links': [
             {'label': 'Photo series on Instagram', 'url': 'https://www.instagram.com/p/De_md_flyqA/'},
             {'label': '“Turtle munchies” on Instagram', 'url': 'https://www.instagram.com/reel/DepFufGpkkO/'},
@@ -138,19 +138,20 @@ PROJECTS = [
         'slug': 'kebnekaise',
         'title': 'Kebnekaise',
         'kind': 'Hiking film & photo',
+        'cats': ['Film', 'Photo'],
         'location': 'Kebnekaise, Sweden',
         'year': '2026',
         'lead': ("A summer hike in Kebnekaise with friends, cut into a short film. "
-                 "The photograph of the climb is, in Ruben's words, one of his favourites from the summer."),
+                 "The photograph of the climb is, in Ruben’s words, one of his favourites from the summer."),
         'meta_desc': ("Kebnekaise, a summer hiking film and photograph by Ruben Svanerud, "
                       "shot on a hike with friends in the Swedish mountains."),
         'primary': {'label': 'Watch the film on Instagram', 'url': 'https://www.instagram.com/reel/DgIWM6nN4HL/'},
         'cover': 'keb-climb',
         'thumb': 'keb-climb',
-        'suite': [
-            {'type': 'detail', 'img': 'keb-hike', 'align': 'left', 'gap': 'm',
-             'caption': 'Still from the film.'},
+        'gallery': [
+            ('full', ['keb-hike']),
         ],
+        'gallery_caption': 'Still from the film.',
         'links': [
             {'label': 'Film on Instagram', 'url': 'https://www.instagram.com/reel/DgIWM6nN4HL/'},
             {'label': 'Film on TikTok', 'url': 'https://www.tiktok.com/@rubens.cut/video/7711771333570350358'},
@@ -162,6 +163,7 @@ PROJECTS = [
         'title': 'EM26 Is Next',
         'subtitle': 'With boxer Erwa',
         'kind': 'Boxing, behind the scenes',
+        'cats': ['Film', 'Sport'],
         'location': 'Trädgården',
         'year': '2026',
         'lead': ("Ruben films the boxer Erwa at ringside and backstage, from fight night at Trädgården "
@@ -170,23 +172,74 @@ PROJECTS = [
                       "at fight night at Trädgården."),
         'primary': {'label': 'Watch on Instagram', 'url': 'https://www.instagram.com/reel/Dc5vxR5pzYn/'},
         'cover_pair': ['box-win', 'box-rig'],
-        'cover_pos': ['50% 30%', '50% 100%'],
         'thumb': 'box-win',
-        'suite': [],
+        'thumb_pos': '50% 30%',
+        'gallery': [],
         'links': [
             {'label': '“EM26 is next” on Instagram', 'url': 'https://www.instagram.com/reel/Dc5vxR5pzYn/'},
             {'label': 'Fight night on Erwa’s Instagram', 'url': 'https://www.instagram.com/reel/DdCWilcOnO4/'},
-            {'label': 'Ringside and backstage, on Erwa’s Instagram',
-             'url': 'https://www.instagram.com/reel/DcBQ4YgM9mo/'},
+            {'label': 'Ringside and backstage, on Erwa’s Instagram', 'url': 'https://www.instagram.com/reel/DcBQ4YgM9mo/'},
         ],
     },
 ]
 
+# Home hero. focus = where the frame symbol sits, as fractions of the image (the two cable cars).
+HERO = {'img': 'ski-gondola', 'tall': 'ski-gondola-tall', 'focus': (0.488, 0.54), 'focus_tall': (0.5, 0.27)}
+
+# Inline images in the intro sentence
+INTRO = [('ski-air', 'ski films'), ('pop-street', 'YouTube episodes'), ('dive-reef', 'underwater series'),
+         ('box-win', 'fight-night films')]
+
+# What Ruben makes, one card per kind of work, each pointing at a real project
+MAKE = [
+    {'title': 'Short films', 'text': 'Season edits cut into short films, like For the Love of Ski.',
+     'img': 'ski-trees', 'slug': 'for-the-love-of-ski', 'tone': 'forest'},
+    {'title': 'YouTube episodes', 'text': 'Filmed and edited on location: EP.01 for Mr. Popcorn in Milan.',
+     'img': 'pop-milan', 'slug': 'betting-everything-on-popcorn', 'tone': 'sage'},
+    {'title': 'Sport, behind the scenes', 'text': 'Ringside and backstage with the boxer Erwa.',
+     'img': 'box-win', 'img_pos': '50% 30%', 'slug': 'em26-is-next', 'tone': 'leaf'},
+    {'title': 'Underwater & outdoors', 'text': 'Reefs, a sunken aircraft and Kebnekaise, in photo and film.',
+     'img': 'dive-torch', 'slug': 'a-different-planet', 'tone': 'pine'},
+]
+
+# Stills row (home) and Stills page: (image, project slug, caption)
+STILLS = [
+    ('ski-trees', 'for-the-love-of-ski', 'Through the birches'),
+    ('pop-milan', 'betting-everything-on-popcorn', 'Milan, late afternoon'),
+    ('dive-wreck', 'a-different-planet', 'The sunken aircraft'),
+    ('keb-climb', 'kebnekaise', 'The climb'),
+    ('ski-air', 'for-the-love-of-ski', 'Off the kicker'),
+    ('pop-statue', 'betting-everything-on-popcorn', 'Leonardo, Milan'),
+    ('dive-torch', 'a-different-planet', 'Going down'),
+    ('ski-goggles', 'for-the-love-of-ski', 'Looking out'),
+    ('keb-hike', 'kebnekaise', 'Toward the peak'),
+    ('pop-orange', 'betting-everything-on-popcorn', 'Day one'),
+    ('dive-coral', 'a-different-planet', 'Plate coral'),
+    ('ski-gondola', 'for-the-love-of-ski', 'The cable cars'),
+    ('dive-surface', 'a-different-planet', 'At the surface'),
+    ('pop-night', 'betting-everything-on-popcorn', 'Late night'),
+    ('ski-spin', 'for-the-love-of-ski', 'Spin by the pine'),
+    ('pop-station', 'betting-everything-on-popcorn', 'On the platform'),
+    ('dive-turtle', 'a-different-planet', 'Turtle munchies'),
+    ('box-win', 'em26-is-next', 'Fight night'),
+    ('ski-powder', 'for-the-love-of-ski', 'Powder turn'),
+    ('box-rig', 'em26-is-next', 'At the corner'),
+    ('dive-reef', 'a-different-planet', 'Above the reef'),
+    ('pop-bts-room', 'betting-everything-on-popcorn', 'Behind the scenes'),
+]
+
+# Ruben's own words, from his captions
+QUOTE_POPCORN = 'This is my favourite work yet and only the start of something bigger.'
+
 SHORT_FORM = [
     {'img': 'ski-poster', 'label': 'For the Love of Ski', 'kind': 'Reel', 'pos': '50% 50%',
      'url': 'https://www.instagram.com/reel/DfIPBwspRGu/'},
-    {'img': 'box-win', 'label': 'Fight night, with Erwa', 'kind': 'Reel', 'pos': '50% 60%',
+    {'img': 'box-win', 'label': 'Fight night, with Erwa', 'kind': 'Reel', 'pos': '50% 50%',
      'url': 'https://www.instagram.com/reel/DdCWilcOnO4/'},
-    {'img': 'box-rig', 'label': 'EM26 Is Next', 'kind': 'Reel', 'pos': '50% 85%',
+    {'img': 'box-rig', 'label': 'EM26 Is Next', 'kind': 'Reel', 'pos': '50% 100%',
      'url': 'https://www.instagram.com/reel/Dc5vxR5pzYn/'},
+    {'img': 'dive-turtle', 'label': 'Turtle munchies', 'kind': 'Reel', 'pos': '40% 50%',
+     'url': 'https://www.instagram.com/reel/DepFufGpkkO/'},
+    {'img': 'keb-hike', 'label': 'Hiking in Kebnekaise', 'kind': 'Reel', 'pos': '42% 50%',
+     'url': 'https://www.instagram.com/reel/DgIWM6nN4HL/'},
 ]

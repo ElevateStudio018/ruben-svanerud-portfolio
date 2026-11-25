@@ -27,6 +27,32 @@ env = Environment(loader=FileSystemLoader(os.path.join(HERE, 'templates')), auto
                   trim_blocks=False, lstrip_blocks=False, undefined=ChainableUndefined)
 env.filters['keep'] = keep
 
+import re as _re
+ROOT = os.path.dirname(HERE)
+
+
+def svg_inline(name, label=None):
+    """Inline an SVG from assets/logo (fill=currentColor). Decorative unless a label is given."""
+    raw = open(os.path.join(ROOT, 'assets', 'logo', name + '.svg')).read()
+    raw = _re.sub(r'<title>.*?</title>', '', raw)
+    raw = _re.sub(r'\s(width|height)="[^"]*"', '', raw, count=2)
+    if label:
+        raw = raw.replace('<svg ', f'<svg focusable="false" ', 1).replace('role="img"', 'role="img"').replace(
+            _re.search(r'aria-label="[^"]*"', raw).group(0), f'aria-label="{label}"')
+    else:
+        raw = raw.replace('role="img"', 'aria-hidden="true" focusable="false"')
+        raw = _re.sub(r'\saria-label="[^"]*"', '', raw)
+    return Markup(raw)
+
+
+def shape_inline(n):
+    raw = open(os.path.join(ROOT, 'assets', 'shapes', f'shape-{n}.svg')).read()
+    return Markup(raw.replace('<svg ', '<svg focusable="false" ', 1))
+
+
+env.globals['svg'] = svg_inline
+env.globals['shape'] = shape_inline
+
 SITE = D.SITE_URL.rstrip('/')
 person_ld = {
     '@type': 'Person',
@@ -53,7 +79,14 @@ def og_img(name):
     return f'{SITE}/assets/img/{name}-{w}.webp'
 
 
-common = dict(preview=getattr(D, 'PREVIEW', False), person=D.PERSON, projects=D.PROJECTS, images=images, alt=D.ALT, short_form=D.SHORT_FORM)
+cats = []
+for _pr in D.PROJECTS:
+    for _c in _pr.get('cats', []):
+        if _c not in cats:
+            cats.append(_c)
+common = dict(preview=getattr(D, 'PREVIEW', False), person=D.PERSON, projects=D.PROJECTS, images=images, alt=D.ALT,
+              short_form=D.SHORT_FORM, stills=D.STILLS, make=D.MAKE, intro=D.INTRO, hero_d=D.HERO, cats=cats,
+              quote_popcorn=D.QUOTE_POPCORN, titles={pr['slug']: pr['title'] for pr in D.PROJECTS})
 
 
 def render(tpl, out, **ctx):
@@ -94,6 +127,13 @@ render('projects.html', 'projects.html', p='', section='projects', hero=False,
        canonical=abs_url('projects.html'), og_image=og_img('ski-air'),
        jsonld=ld({'@type': 'CollectionPage', 'name': 'Projects', 'mainEntity': {'@type': 'ItemList', 'itemListElement': items}}))
 
+# Stills
+render('stills.html', 'stills.html', p='', section='stills', hero=False, lightbox=True,
+       title='Stills — Ruben Svanerud',
+       description=('Stills and photographs by Ruben Svanerud: skiing, Milan, underwater, Kebnekaise and fight night.'),
+       canonical=abs_url('stills.html'), og_image=og_img('dive-wreck'),
+       jsonld=ld({'@type': 'CollectionPage', 'name': 'Stills', 'author': {'@type': 'Person', 'name': D.PERSON['name']}}))
+
 # Project pages
 total = len(D.PROJECTS)
 for n, pr in enumerate(D.PROJECTS):
@@ -109,15 +149,38 @@ for n, pr in enumerate(D.PROJECTS):
     if SITE:
         work['url'] = f"{SITE}/projects/{pr['slug']}.html"
     cover = pr.get('cover') or pr['thumb']
-    render('project.html', f"projects/{pr['slug']}.html", p='../', section='projects', hero=False,
+    render('project.html', f"projects/{pr['slug']}.html", p='../', section='projects', hero=False, lightbox=bool(pr.get('gallery')),
+           dialog=False,
            pr=pr, nxt=nxt, num=n + 1, total=total, og_type='article',
            title=f"{pr['title']} — Ruben Svanerud", description=pr['meta_desc'],
            canonical=abs_url(f"projects/{pr['slug']}.html"), og_image=og_img(cover), jsonld=ld(work))
 
+# Brand kit page
+PALETTE = [
+    ('Forest', '#12392A', '18 57 42', 'Main dark: backgrounds, text on light, the logo on cream', 'tone-forest'),
+    ('Pine', '#1F6B47', '31 107 71', 'Second green: shapes on forest, cards', 'tone-pine'),
+    ('Leaf', '#9FCB6B', '159 203 107', 'Bright green: big colour blocks', 'tone-leaf'),
+    ('Sage', '#C6DCC0', '198 220 192', 'Soft green: panels', 'tone-sage'),
+    ('Cream', '#F2EBDD', '242 235 221', 'Paper, and the logo on dark and on photos', 'tone-cream2'),
+    ('Ink', '#0E1A14', '14 26 20', 'Body text on cream', 'bk-sw--ink'),
+    ('Signal', '#E5432D', '229 67 45', 'Only the play dot and small calls to action', 'bk-sw--signal'),
+]
+APPS = [('youtube-banner', 'YouTube banner, 2560 × 1440', 'bk-app--w'), ('video-end-card', 'Video end card, 1920 × 1080', 'bk-app--w'),
+        ('instagram-post', 'Instagram post, 1080 × 1350', 'bk-app--s'), ('instagram-avatar', 'Profile picture, 1080 × 1080', 'bk-app--s'),
+        ('watermark', 'Watermark, transparent', 'bk-app--s'),
+        ('business-card-front', 'Business card, front', 'bk-app--w'), ('business-card-back', 'Business card, back', 'bk-app--w'),
+        ('lower-third', 'Lower third for video, transparent', 'bk-app--f')]
+render('brand.html', 'brand/index.html', p='../', section='brand', hero=True, body_class='has-hero',
+       palette=PALETTE, apps=APPS,
+       title='Brand kit — Ruben Svanerud',
+       description='Brand kit for Ruben Svanerud: logo, colour, type, shapes, photography and templates.',
+       canonical=abs_url('brand/'), og_image=og_img('ski-gondola'),
+       jsonld=ld({'@type': 'WebPage', 'name': 'Ruben Svanerud brand kit'}))
+
 # robots, sitemap, llms.txt
 robots = 'User-agent: *\n' + ('Disallow: /\n' if getattr(D, 'PREVIEW', False) else 'Allow: /\n')
 if SITE:
-    urls = ['', 'about.html', 'projects.html'] + [f"projects/{pr['slug']}.html" for pr in D.PROJECTS]
+    urls = ['', 'about.html', 'projects.html', 'stills.html'] + [f"projects/{pr['slug']}.html" for pr in D.PROJECTS]
     sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     sm += ''.join(f'  <url><loc>{SITE}/{u}</loc></url>\n' for u in urls) + '</urlset>\n'
     open(os.path.join(OUT, 'sitemap.xml'), 'w').write(sm)

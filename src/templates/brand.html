@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{%- import 'macros.html' as m with context -%}
+{% block preload %}<link rel="stylesheet" href="{{ p }}assets/css/brand.css">{% endblock %}
+{% block main %}
+<section class="hero" aria-label="Brand kit">
+  <div class="bk-hero tone-forest">
+    <div class="bk-hero__shape" aria-hidden="true">{{ shape(1) }}</div>
+    <div class="bk-hero__shape bk-hero__shape--2" aria-hidden="true">{{ shape(3) }}</div>
+    <div class="bk-hero__mark" aria-hidden="true">{{ svg('symbol') }}</div>
+    <div class="bk-hero__body">
+      <ul class="chips"><li class="chip chip--leaf">Brand kit</li><li class="chip">v1 · November 2026</li></ul>
+      <h1 class="bk-hero__title">Ruben Svanerud, brand kit</h1>
+      <p class="soft">Logo, colour, type, shapes and templates for Ruben’s films, socials and site.</p>
+      <div class="pills">
+        <a class="pill pill--cream" href="ruben-svanerud-brand-kit.zip" download>Download the kit (.zip)</a>
+        <a class="pill pill--ghost" href="#logo"><span>Start with the logo</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap bk-sec" aria-labelledby="idea">
+  <div class="bk-head"><span class="label soft">01</span><h2 class="shead__title" id="idea">The idea: the frame</h2></div>
+  <div class="bk-idea">
+    <p class="intro__text" style="max-width:24ch">Four corners of a viewfinder, drawn by hand. It frames whatever Ruben points it at.</p>
+    <div class="bk-idea__media">
+      <div class="ph ph--169">{{ m.img('ski-gondola', '(min-width: 1025px) 50vw, 100vw') }}</div>
+      <div class="bk-idea__mark" aria-hidden="true">{{ svg('symbol') }}</div>
+    </div>
+    <p class="soft" style="max-width:var(--measure)">The symbol is a camera frame, and it also reads as a four-leaf clover or a snow crystal. That fits work made on skis, underwater and out in the mountains. The strokes swell at the ends like a brush, so the mark feels made by a person, not a machine. The type is calm and friendly, which lets the films and photos do the talking. A literal cut through the handle <i>rubens.cut</i> nods to the edit.</p>
+  </div>
+</section>
+
+<section class="wrap bk-sec" id="logo" aria-labelledby="logo-title">
+  <div class="bk-head"><span class="label soft">02</span><h2 class="shead__title" id="logo-title">Logo</h2></div>
+  <div class="bk-logos">
+    <figure class="bk-tile bk-tile--wide tone-forest"><div class="bk-tile__art" style="width:min(78%,34rem)">{{ svg('lockup') }}</div><figcaption class="label">Lockup · the default</figcaption></figure>
+    <figure class="bk-tile tone-sage"><div class="bk-tile__art" style="width:44%">{{ svg('symbol') }}</div><figcaption class="label">Symbol · the frame</figcaption></figure>
+    <figure class="bk-tile tone-cream2"><div class="bk-tile__art" style="width:72%">{{ svg('wordmark-stacked') }}</div><figcaption class="label">Wordmark, stacked</figcaption></figure>
+    <figure class="bk-tile tone-leaf"><div class="bk-tile__art" style="width:76%;color:var(--forest)">{{ svg('handle') }}</div><figcaption class="label">Handle · rubens.cut</figcaption></figure>
+    <figure class="bk-tile tone-pine"><div class="bk-tile__art" style="width:82%">{{ svg('wordmark') }}</div><figcaption class="label">Wordmark, one line</figcaption></figure>
+    <figure class="bk-tile bk-tile--photo on-photo">{{ m.img('dive-reef', '(min-width: 1025px) 33vw, 100vw') }}<div class="bk-tile__art" style="width:40%;color:var(--cream)">{{ svg('symbol') }}</div><figcaption class="label">Cream on photos</figcaption></figure>
+    <figure class="bk-tile tone-forest"><div class="bk-tile__art" style="width:76%">{{ svg('handle') }}</div><figcaption class="label">Handle with the signal dot</figcaption></figure>
+  </div>
+  <div class="bk-rules">
+    <div class="fact tone-cream2"><span class="label soft">Clear space</span><b>Keep free space around the logo equal to the height of one corner of the frame.</b></div>
+    <div class="fact tone-cream2"><span class="label soft">Minimum size</span><b>Lockup 120 px wide on screen (30 mm in print). Symbol 20 px (6 mm).</b></div>
+    <div class="fact tone-cream2"><span class="label soft">Colours</span><b>Cream on forest and on photos, forest on cream, sage and leaf. One colour only.</b></div>
+    <div class="fact tone-cream2"><span class="label soft">Don’t</span><b>Stretch, rotate, outline, add shadows or put the logo on busy, light areas of a photo.</b></div>
+  </div>
+  <div class="bk-dl">
+    <p class="label soft">Download</p>
+    <div class="pills">
+      {%- for f, label in [('ruben-svanerud-lockup-cream', 'Lockup, cream'), ('ruben-svanerud-lockup-forest', 'Lockup, forest'), ('symbol-cream', 'Symbol, cream'), ('symbol-forest', 'Symbol, forest'), ('rubens-cut-cream-signal', 'rubens.cut, cream'), ('ruben-svanerud-wordmark-stacked-forest', 'Stacked, forest')] %}
+      <a class="pill pill--ghost" href="logos/{{ f }}.svg" download><span>{{ label }} · SVG</span></a>
+      <a class="pill pill--ghost" href="logos/png/{{ f }}.png" download><span>PNG</span></a>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="wrap bk-sec" aria-labelledby="colour">
+  <div class="bk-head"><span class="label soft">03</span><h2 class="shead__title" id="colour">Colour</h2></div>
+  <div class="bk-swatches">
+    {%- for name, hexv, rgb, use, cls in palette %}
+    <div class="bk-sw {{ cls }}"><b>{{ name }}</b><span class="label">{{ hexv }} · RGB {{ rgb }}</span><span class="bk-sw__use">{{ use }}</span></div>
+    {%- endfor %}
+  </div>
+  <p class="soft" style="max-width:var(--measure);margin-top:var(--gap-s)">Mostly greens and cream. Signal red comes from the red jacket and gondola that keep turning up in Ruben’s footage. It is used only on the play dot and small calls to action, never on big areas.</p>
+</section>
+
+<section class="wrap bk-sec" aria-labelledby="type">
+  <div class="bk-head"><span class="label soft">04</span><h2 class="shead__title" id="type">Type</h2></div>
+  <div class="bk-type">
+    <div class="bk-type__card tone-forest">
+      <span class="label soft">Figtree 700 · headings · sentence case · tracking −3.5%</span>
+      <p class="bk-type__big">Films from the mountains, the sea and the ring.</p>
+    </div>
+    <div class="bk-type__card tone-cream2">
+      <span class="label soft">Figtree 400–600 · text</span>
+      <p style="font-size:1.25rem;line-height:1.5;max-width:30ch">A short film cut from a season of skiing with friends. Shot and edited by Ruben.</p>
+      <p class="bk-type__alpha">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz Åå Ää Öö 0123456789</p>
+    </div>
+    <div class="bk-type__card tone-sage">
+      <span class="label">DM Mono · labels and captions only</span>
+      <p class="label" style="font-size:1.4rem;line-height:1.4">Still from For the Love of Ski · 04:03</p>
+    </div>
+  </div>
+  <p class="soft" style="max-width:var(--measure);margin-top:var(--gap-s)">Both typefaces are free under the SIL Open Font License (fonts.google.com). Headings stay in sentence case, never all caps, and never outlined.</p>
+</section>
+
+<section class="wrap bk-sec" aria-labelledby="shapes">
+  <div class="bk-head"><span class="label soft">05</span><h2 class="shead__title" id="shapes">Shapes</h2></div>
+  <div class="bk-shapes">
+    <div class="bk-shape tone-forest"><div style="color:var(--pine)">{{ shape(1) }}</div></div>
+    <div class="bk-shape tone-pine"><div style="color:var(--leaf)">{{ shape(2) }}</div></div>
+    <div class="bk-shape tone-cream2"><div style="color:var(--sage)">{{ shape(3) }}</div></div>
+    <div class="bk-shape tone-leaf"><div style="color:var(--forest)">{{ shape(4) }}</div></div>
+  </div>
+  <p class="soft" style="max-width:var(--measure);margin-top:var(--gap-s)">Soft leaf and snow-drift silhouettes. Use them big, cropped by the edge and tone on tone: pine on forest, sage on cream. They sit behind content, never on top of photos.</p>
+</section>
+
+<section class="wrap bk-sec" aria-labelledby="photo">
+  <div class="bk-head"><span class="label soft">06</span><h2 class="shead__title" id="photo">Photography</h2></div>
+  <div class="bk-photo">
+    <div class="ph ph--43 bk-photo__a">{{ m.img('keb-climb', '(min-width: 1025px) 50vw, 100vw') }}<div class="bk-idea__mark" style="width:30%;left:75%;top:56%" aria-hidden="true">{{ svg('symbol') }}</div></div>
+    <div class="bk-photo__list">
+      <div class="fact tone-sage"><span class="label">Own work only</span><b>Ruben’s own frames. No stock photos and no AI images.</b></div>
+      <div class="fact tone-leaf"><span class="label">Frame the subject</span><b>Put the cream frame around the subject: a gondola, a diver, a hiker.</b></div>
+      <div class="fact tone-cream2"><span class="label soft">Corners</span><b>Photos get soft rounded corners on the site, the same family as the symbol.</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap bk-sec" aria-labelledby="apps">
+  <div class="bk-head"><span class="label soft">07</span><h2 class="shead__title" id="apps">Templates</h2></div>
+  <div class="bk-apps">
+    {%- for f, label, cls in apps %}
+    <figure class="bk-app {{ cls }}">
+      <a href="applications/{{ f }}.png" download class="bk-app__img{% if 'lower' in f or 'water' in f %} is-alpha{% endif %}{% if 'card' in f and 'end' not in f %} is-card{% endif %}"><img src="applications/{{ f }}.png" alt="{{ label }}" loading="lazy"></a>
+      <figcaption class="cap"><b style="font-weight:600">{{ label }}</b> <span class="label soft">PNG ↓</span></figcaption>
+    </figure>
+    {%- endfor %}
+  </div>
+</section>
+
+<section class="cta tone-leaf" aria-labelledby="dl-title" style="margin-top:var(--gap-m)">
+  <div class="cta__shape" aria-hidden="true">{{ shape(2) }}</div>
+  <h2 class="cta__title" id="dl-title" style="font-size:var(--t-h2)">Everything in one zip: logos as SVG and PNG, shapes and templates.</h2>
+  <div class="pills"><a class="pill pill--forest" href="ruben-svanerud-brand-kit.zip" download>Download the brand kit</a></div>
+</section>
+{% endblock %}

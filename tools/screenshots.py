@@ -7,8 +7,9 @@ Also reports horizontal overflow and small tap targets per page/width.
 import sys, os, json
 from playwright.sync_api import sync_playwright
 
-BASE = 'http://localhost:8123/'
-PAGES = ['index.html', 'about.html', 'projects.html',
+import os as _os
+BASE = _os.environ.get('BASE', 'http://localhost:8123/')
+PAGES = ['index.html', 'about.html', 'projects.html', 'stills.html',
          'projects/for-the-love-of-ski.html', 'projects/betting-everything-on-popcorn.html',
          'projects/a-different-planet.html', 'projects/kebnekaise.html', 'projects/em26-is-next.html']
 WIDTHS = [390, 768, 1440]
@@ -41,18 +42,20 @@ CHECK = r"""
 """
 
 with sync_playwright() as pw:
-    br = pw.chromium.launch(args=['--no-sandbox', '--hide-scrollbars'])
+    br = pw.chromium.launch(executable_path=_os.environ.get('CHROME') or None, args=['--no-sandbox', '--hide-scrollbars'])
     for w in widths:
         ctx = br.new_context(viewport={'width': w, 'height': 900 if w > 500 else 844}, device_scale_factor=1,
                              reduced_motion='reduce')
         pg = ctx.new_page()
         for path in pages:
-            pg.goto(BASE + path, wait_until='networkidle')
+            pg.goto(BASE + path, wait_until='load')
             pg.evaluate("""async () => {
+                document.querySelectorAll('img[loading=lazy]').forEach(i => { i.loading = 'eager'; });
                 const H = document.documentElement.scrollHeight;
-                for (let y = 0; y < H; y += innerHeight * 0.8) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 120)); }
+                for (let y = 0; y < H; y += innerHeight * 0.8) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 80)); }
                 window.scrollTo(0, 0);
-                await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+                const wait = Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+                await Promise.race([wait, new Promise(r => setTimeout(r, 8000))]);
                 await document.fonts.ready;
             }""")
             pg.wait_for_timeout(250)

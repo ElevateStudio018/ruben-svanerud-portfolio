@@ -1,92 +1,96 @@
 {% extends 'base.html' %}
 {%- import 'macros.html' as m with context -%}
 {% block main %}
-<header class="wrap grid proj-head">
-  <div class="proj-head__top">
-    <a class="micro" href="../projects.html">← All projects</a>
-    <span class="micro">{{ '%02d' % num }} / {{ '%02d' % total }}</span>
+{%- if pr.cover_pair %}
+<section class="pj-hero" aria-label="{{ pr.title }}">
+  <div class="pj-hero__card tone-forest" style="align-items:stretch">
+    <div class="film__shape" aria-hidden="true">{{ shape(4) }}</div>
+    <div class="pj-hero__top"><a class="chip" href="../projects.html">← All projects</a><span class="chip">{{ '%02d' % num }} / {{ '%02d' % total }}</span></div>
+    <div class="pj-hero__body pj-pair">
+      <div class="pj-pair__text">
+        {{ m.chips(pr) }}
+        <h1 class="pj-hero__title">{{ pr.title|keep }}</h1>
+        {%- if pr.subtitle %}<p class="pj-hero__sub">{{ pr.subtitle }}</p>{% endif %}
+      </div>
+      <div class="pj-pair__media" aria-label="Stills from the reels">
+        {%- for name in pr.cover_pair %}
+        <div class="ph ph--916 pj-pair__card">{{ m.img(name, '(min-width: 1025px) 18vw, 40vw', eager=loop.first) }}</div>
+        {%- endfor %}
+      </div>
+    </div>
   </div>
-  <h1 class="proj-title">
-    {%- if pr.eyebrow %}<span class="proj-title__eyebrow">{{ pr.eyebrow }}</span>{% endif -%}
-    {{ pr.title|keep }}
-    {%- if pr.subtitle %}<span class="proj-title__sub">{{ pr.subtitle }}</span>{% endif -%}
-  </h1>
-  {{ m.facts(pr) }}
-  <div class="proj-lead">
-    <p>{{ pr.lead }}</p>
-    {%- if pr.primary %}
-    <p class="proj-lead__cta"><a class="btn" href="{{ pr.primary.url }}" rel="noopener" target="_blank"><span class="btn__dot" aria-hidden="true"></span>{{ pr.primary.label }}<span class="vh"> (opens in a new tab)</span><span aria-hidden="true">↗</span></a></p>
-    {%- endif %}
-  </div>
-</header>
-
-{%- if pr.youtube %}
-<section aria-label="Film">
-  <div class="video" data-yt-inline="{{ pr.youtube }}" data-title="{{ pr.title }}">
-    {{ m.img(pr.cover, '100vw', eager=True) }}
-    <a class="video__alt micro ext" href="https://www.youtube.com/watch?v={{ pr.youtube }}" rel="noopener" target="_blank">YouTube</a>
-    <button class="btn video__play" type="button"><span class="btn__dot" aria-hidden="true"></span>Play film<span class="btn__time">{{ pr.runtime }}</span></button>
-  </div>
-</section>
-{%- elif pr.cover_pair %}
-<section class="wrap" aria-label="Stills">
-  <div class="cover-pair">
-    {%- for name in pr.cover_pair %}
-    <div class="frame frame--45">{{ m.img(name, '(min-width: 768px) 35vw, 50vw', eager=loop.first, pos=pr.cover_pos[loop.index0]) }}</div>
-    {%- endfor %}
-  </div>
-  <p class="micro cap" style="text-align:right">Stills from the reels</p>
 </section>
 {%- else %}
-<section aria-label="Cover">
-  <div class="frame">{{ m.img(pr.cover, '100vw', eager=True) }}</div>
+<section class="pj-hero" aria-label="{{ pr.title }}">
+  <div class="pj-hero__card">
+    <div class="pj-hero__img">{{ m.img(pr.cover, '100vw', eager=True) }}</div>
+    <div class="pj-hero__top"><a class="chip" href="../projects.html">← All projects</a><span class="chip">{{ '%02d' % num }} / {{ '%02d' % total }}</span></div>
+    <div class="pj-hero__body on-photo">
+      {{ m.chips(pr) }}
+      <h1 class="pj-hero__title">{% if pr.eyebrow %}<span class="label" style="display:block;margin-bottom:0.6rem;letter-spacing:0">{{ pr.eyebrow }}</span>{% endif %}{{ pr.title|keep }}</h1>
+      {%- if pr.subtitle %}<p class="pj-hero__sub">{{ pr.subtitle }}</p>{% endif %}
+    </div>
+  </div>
 </section>
 {%- endif %}
 
-{%- if pr.suite %}
-<section class="suite" aria-label="Images">
-  {%- for b in pr.suite %}
-  {%- if b.type == 'wide' %}
-  <figure class="blk blk--wide blk--{{ b.gap }}" style="margin-inline:0;margin-bottom:0" data-reveal>
-    <div class="frame">{{ m.img(b.img, '100vw') }}</div>
-    {%- if b.caption %}<figcaption class="micro cap blk__cap">{{ b.caption }}</figcaption>{% endif %}
-  </figure>
-  {%- elif b.type == 'inset' %}
-  <figure class="blk blk--inset blk--{{ b.gap }} wrap" style="margin-inline:0;margin-bottom:0" data-reveal>
-    <div class="frame">{{ m.img(b.img, 'calc(100vw - 2 * var(--edge))') }}</div>
-    {%- if b.caption %}<figcaption class="micro cap">{{ b.caption }}</figcaption>{% endif %}
-  </figure>
-  {%- elif b.type == 'pair' %}
-  <figure class="blk blk--pair blk--{{ b.gap }} wrap" style="margin-inline:0;margin-bottom:0" data-reveal>
-    <div class="blk__row">
-      {%- for name in b.imgs %}
-      <div class="frame">{{ m.img(name, '(min-width: 768px) 48vw, 100vw', pos=(b.pos[loop.index0] if b.pos else None)) }}</div>
+<section class="wrap pj-intro" aria-label="About the project">
+  <dl class="facts" style="margin-top:0">
+    <div class="fact tone-sage"><dt class="label">Type</dt><dd><b>{{ pr.kind }}</b></dd></div>
+    {%- if pr.client %}<div class="fact tone-leaf"><dt class="label">Client</dt><dd><b>{{ pr.client }}</b></dd></div>{% endif %}
+    {%- if pr.location and not pr.client %}<div class="fact tone-leaf"><dt class="label">Location</dt><dd><b>{{ pr.location }}</b></dd></div>{% endif %}
+    {%- if pr.runtime %}<div class="fact tone-cream2"><dt class="label soft">Runtime</dt><dd><b>{{ pr.runtime }}</b></dd></div>{% endif %}
+    {%- if pr.credit %}<div class="fact tone-cream2"><dt class="label soft">Credit</dt><dd><b>{{ pr.credit }}</b></dd></div>{% endif %}
+    {%- if pr.client and pr.location %}<div class="fact tone-cream2"><dt class="label soft">Location</dt><dd><b>{{ pr.location }}</b></dd></div>{% endif %}
+    <div class="fact tone-cream2"><dt class="label soft">Year</dt><dd><b>{{ pr.year }}</b></dd></div>
+  </dl>
+  <div style="display:grid;gap:var(--gap-s);align-content:start">
+    <p class="pj-lead">{{ pr.lead }}</p>
+    {%- if pr.primary %}
+    <div class="pills"><a class="pill pill--forest" href="{{ pr.primary.url }}" rel="noopener" target="_blank"><span class="pill__dot" aria-hidden="true"></span>{{ pr.primary.label }} {{ m.ext() }}</a></div>
+    {%- endif %}
+  </div>
+</section>
+
+{%- if pr.youtube %}
+<section class="wrap" aria-label="Film" style="padding-bottom:var(--gap-m)">
+  <div class="video" data-yt-inline="{{ pr.youtube }}" data-title="{{ pr.title }}">
+    {{ m.img(pr.poster, '100vw') }}
+    <button class="pill pill--cream video__play" type="button"><span class="pill__dot" aria-hidden="true"></span>Play film<span class="pill__time">{{ pr.runtime }}</span></button>
+    <a class="pill pill--ghost video__alt" href="https://www.youtube.com/watch?v={{ pr.youtube }}" rel="noopener" target="_blank" style="color:var(--cream)"><span>YouTube ↗</span></a>
+  </div>
+</section>
+{%- endif %}
+
+{%- if pr.gallery %}
+<section class="wrap" aria-label="Images" style="padding-bottom:var(--gap-m)">
+  <div class="gal-rows" data-gallery>
+    {%- for kind, names in pr.gallery %}
+    <div class="grow grow--{{ kind }}" data-reveal>
+      {%- for name in names %}
+      <button class="ph" type="button" data-lightbox="{{ name }}" data-src="{{ p }}assets/img/{{ name }}-{{ (images[name].sizes|select('le', 2000)|list)[-1] }}.webp" data-cap="{{ alt[name] }}" aria-label="Open image: {{ alt[name] }}">{{ m.img(name, '100vw' if kind == 'full' else '(min-width: 768px) 50vw, 100vw', pos=('8% 50%' if name == 'ski-powder' else None)) }}</button>
       {%- endfor %}
     </div>
-    {%- if b.caption %}<figcaption class="micro cap">{{ b.caption }}</figcaption>{% endif %}
-  </figure>
-  {%- elif b.type == 'detail' %}
-  <figure class="blk blk--detail is-{{ b.align }} blk--{{ b.gap }} wrap" style="margin-inline:0;margin-bottom:0" data-reveal>
-    <div class="frame">{{ m.img(b.img, '(min-width: 768px) 58vw, 100vw') }}</div>
-    {%- if b.caption %}<figcaption class="micro blk__cap">{{ b.caption }}</figcaption>{% endif %}
-  </figure>
-  {%- endif %}
-  {%- endfor %}
+    {%- endfor %}
+  </div>
+  {%- if pr.gallery_caption %}<p class="label soft cap">{{ pr.gallery_caption }}</p>{% endif %}
 </section>
 {%- endif %}
 
-<section class="wrap grid watch" aria-labelledby="watch-title">
-  <h2 class="micro" id="watch-title">Watch &amp; view</h2>
-  <ul>
-    {%- for l in pr.links %}
-    <li><a href="{{ l.url }}" rel="noopener" target="_blank"><span>{{ l.label }}</span><span class="arw" aria-hidden="true">↗</span><span class="vh"> (opens in a new tab)</span></a></li>
-    {%- endfor %}
-  </ul>
+<section class="wrap links" aria-label="Watch and view">
+  {%- set tones = ['tone-forest', 'tone-sage', 'tone-leaf'] %}
+  {%- for l in pr.links %}
+  <a class="lk {{ tones[loop.index0 % 3] }}" href="{{ l.url }}" rel="noopener" target="_blank"><span>{{ l.label }}<span class="vh"> (opens in a new tab)</span></span><span aria-hidden="true">↗</span></a>
+  {%- endfor %}
 </section>
 
-<a class="wrap next" href="{{ nxt.slug }}.html">
-  <span class="micro">Next project</span>
-  <span class="next__title"><span>{{ nxt.title|keep }}</span></span>
-  <div class="frame frame--1610 zoom">{{ m.img(nxt.thumb, '(min-width: 768px) 24vw, 66vw', pos=('50% 35%' if nxt.thumb == 'box-win' else None)) }}</div>
+<a class="next" href="{{ nxt.slug }}.html">
+  <div class="next__card">
+    <div class="next__img">{{ m.img(nxt.cover or nxt.thumb, '100vw', pos=nxt.thumb_pos) }}</div>
+    <div class="next__body">
+      <span class="chip" style="justify-self:start">Next project</span>
+      <span class="next__title">{{ nxt.title|keep }}</span>
+    </div>
+  </div>
 </a>
 {% endblock %}

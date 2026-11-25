@@ -1,48 +1,59 @@
 {% extends 'base.html' %}
 {%- import 'macros.html' as m with context -%}
 {% block main %}
-<header class="wrap grid page-head">
-  <h1 class="page-title about-title">Filmmaker and photographer in Uppsala and Stockholm.</h1>
+<header class="wrap phead">
+  <ul class="chips"><li class="chip chip--leaf">About</li><li class="chip">Uppsala / Stockholm</li></ul>
+  <h1 class="phead__title">Hi, I’m Ruben.</h1>
 </header>
 
-<section class="about" aria-label="About Ruben">
-  <figure class="about__media" style="margin:0">
-    <div class="frame frame--45">{{ m.img('box-rig-crop', '(min-width: 900px) 50vw, 100vw') }}</div>
-    <figcaption class="micro cap">Behind the camera, EM26 Is Next</figcaption>
+<section class="wrap ab-hero" aria-label="About Ruben">
+  <figure>
+    <div class="ph">{{ m.img('box-rig-crop', '(min-width: 900px) 40vw, 100vw') }}</div>
+    <figcaption class="label soft cap">Behind the camera at fight night, EM26 Is Next</figcaption>
   </figure>
-  <div class="about__body">
-    <p data-reveal>Ruben Svanerud makes films and photographs. Most of the work happens on the move: on skis, at ringside, underwater and in the mountains.</p>
-    <p data-reveal>He shoots and edits his own work. His short film <a href="projects/for-the-love-of-ski.html">For the Love of Ski</a> was also his entry to Alpingaraget’s video competition Vinter Edit 2026. In Milan he filmed and edited the first episode of <a href="projects/betting-everything-on-popcorn.html">Mr. Popcorn’s YouTube series</a>, which he counts as his best work so far.</p>
-    <p data-reveal>Alongside the longer films he makes short-form video for Instagram, TikTok and YouTube, and he is open to working with brands and people.</p>
-    <dl class="facts" data-reveal>
-      <div><dt class="micro">Based in</dt><dd>{{ person.based }}</dd></div>
-      <div><dt class="micro">Work</dt><dd>Film, photo, editing</dd></div>
-      <div><dt class="micro">Edits in</dt><dd>DaVinci Resolve</dd></div>
-      <div><dt class="micro">Elsewhere</dt><dd>{% for s in person.social %}<a href="{{ s.url }}" rel="noopener" target="_blank">{{ s.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</dd></div>
-      <div><dt class="micro">Contact</dt><dd><a href="mailto:{{ person.email }}">{{ person.email }}</a></dd></div>
-    </dl>
+  <div class="ab-text">
+    <p class="big" data-reveal>I make films and photographs, mostly on the move: on skis, at ringside, underwater and in the mountains.</p>
+    <p class="soft" data-reveal>I shoot and edit my own work. My short film <a href="projects/for-the-love-of-ski.html">For the Love of Ski</a> was also my entry to Alpingaraget’s video competition Vinter Edit 2026. In Milan I filmed and edited the first episode of <a href="projects/betting-everything-on-popcorn.html">Mr. Popcorn’s YouTube series</a>, which I count as my best work so far.</p>
+    <p class="soft" data-reveal>Alongside the longer films I make short-form video for Instagram, TikTok and YouTube, and I’m open to working with brands and people.</p>
+    <div class="pills" data-reveal>
+      <a class="pill pill--forest" href="mailto:{{ person.email }}">Email me {{ m.arrow() }}</a>
+      <a class="pill pill--ghost" href="projects.html"><span>See the projects</span></a>
+    </div>
+    <div class="facts" data-reveal>
+      <div class="fact tone-forest"><span class="label soft">Based in</span><b>Uppsala and Stockholm, Sweden</b></div>
+      <div class="fact tone-sage"><span class="label">Work</span><b>Film, photo and editing</b></div>
+      <div class="fact tone-leaf"><span class="label">Edits in</span><b>DaVinci Resolve</b></div>
+      <div class="fact tone-cream2"><span class="label soft">Shoots</span><b>Skiing, boxing, underwater, travel</b></div>
+      <div class="fact tone-pine"><span class="label soft">Elsewhere</span><b>{% for s in person.social %}<a href="{{ s.url }}" rel="noopener" target="_blank">{{ s.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</b></div>
+      <div class="fact tone-cream2"><span class="label soft">Email</span><b><a href="mailto:{{ person.email }}" style="overflow-wrap:anywhere">{{ person.email }}</a></b></div>
+    </div>
   </div>
 </section>
 
-<figure class="bleed" style="margin-inline:0">
-  <div class="frame frame--169" data-reveal>{{ m.img('dive-wreck', '100vw') }}</div>
-  <figcaption class="micro cap">From A Different Planet, 2026</figcaption>
-</figure>
-
-<section class="wrap index" aria-labelledby="index-title">
-  <div class="shead">
-    <h2 class="shead__title" id="index-title">Projects</h2>
-    <a class="link" href="projects.html">View all</a>
+<section class="wrap" aria-label="Pictures">
+  <div class="mosaic">
+    <div class="ph" data-reveal>{{ m.img('dive-wreck', '(min-width: 768px) 66vw, 100vw') }}</div>
+    <div class="ph" data-reveal>{{ m.img('ski-powder', '(min-width: 768px) 33vw, 100vw', pos='8% 50%') }}</div>
+    <div class="ph" data-reveal>{{ m.img('keb-climb', '(min-width: 768px) 33vw, 100vw', pos='70% 50%') }}</div>
+    <div class="ph" data-reveal>{{ m.img('pop-milan', '(min-width: 768px) 66vw, 100vw') }}</div>
   </div>
-  <ol class="index__list">
+</section>
+
+<section class="row-sec" aria-labelledby="ab-proj">
+  <div class="wrap shead">
+    <h2 class="shead__title" id="ab-proj">Projects</h2>
+    <div class="row-ctl" data-row-for="ab-row">
+      <button type="button" data-dir="-1" aria-label="Scroll projects left">←</button>
+      <button type="button" data-dir="1" aria-label="Scroll projects right">→</button>
+    </div>
+  </div>
+  <ul class="row row--stills" id="ab-row">
     {%- for pr in projects %}
-    <li><a href="projects/{{ pr.slug }}.html">
-      <span class="micro">{{ '%02d' % loop.index }}</span>
-      <span class="index__title">{{ pr.title|keep }}</span>
-      <span class="micro index__kind">{{ pr.kind }}</span>
-      <span class="micro index__arw" aria-hidden="true">→</span>
+    <li><a class="still" href="projects/{{ pr.slug }}.html">
+      <div class="ph ph--45 zoom">{{ m.img(pr.thumb, '(min-width: 1025px) 31vw, (min-width: 768px) 44vw, 78vw', pos=pr.thumb_pos) }}</div>
+      <p class="cap" style="display:grid;gap:0.2rem"><b style="font-size:1.25rem;letter-spacing:-0.02em">{{ pr.title|keep }}</b><span class="label soft">{{ pr.kind }} · {{ pr.year }}</span></p>
     </a></li>
     {%- endfor %}
-  </ol>
+  </ul>
 </section>
 {% endblock %}
