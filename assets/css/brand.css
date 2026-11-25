@@ -2,17 +2,14 @@
 .bk-hero { position: relative; overflow: hidden; border-radius: var(--r-xl); min-height: calc(92svh - 1.2rem); display: flex; align-items: flex-end; }
 .bk-hero__shape { position: absolute; width: 62%; right: -16%; top: -24%; color: var(--pine); }
 .bk-hero__shape--2 { width: 40%; left: -12%; right: auto; top: auto; bottom: -30%; color: var(--forest-2); }
-.bk-hero__mark { position: absolute; width: min(38vh, 52vw); right: 12%; top: 50%; transform: translateY(-58%); color: var(--cream); }
+.bk-hero__mark { position: absolute; width: min(34vh, 40vw); right: 14%; top: 50%; transform: translateY(-54%); color: var(--cream); }
 .bk-hero__body { position: relative; padding: calc(var(--nav-h) + 2rem) var(--edge) clamp(1.5rem, 4vw, 3rem); display: grid; gap: 1.1rem; max-width: 52rem; }
 .bk-hero__title { font-size: var(--t-display); letter-spacing: var(--track-display); line-height: 0.95; }
 @media (max-width: 767px) { .bk-hero__mark { right: 50%; top: 30%; transform: translate(50%, -50%); width: 46vw; } }
 
 .bk-sec { padding-top: var(--gap-l); }
 .bk-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: var(--gap-m); }
-.bk-idea { display: grid; gap: var(--gap-m); }
-.bk-idea__media { position: relative; }
 .bk-idea__mark { position: absolute; width: 34%; left: 48.8%; top: 54%; transform: translate(-50%, -50%); color: var(--cream); }
-@media (min-width: 1025px) { .bk-idea { grid-template-columns: 5fr 7fr; align-items: center; } .bk-idea > p.soft { grid-column: 2; } }
 
 .bk-logos { display: grid; gap: var(--gutter); }
 .bk-tile { position: relative; border-radius: var(--r-lg); overflow: hidden; min-height: 15rem; display: grid; place-items: center; padding: 2rem 1.5rem 3rem; }
@@ -67,3 +64,24 @@
 }
 .bk-app__img.is-card { background: var(--sage); padding: clamp(1rem, 4vw, 3rem); }
 .bk-app__img.is-card img { border-radius: var(--r-md); box-shadow: 0 18px 40px rgba(18, 57, 42, 0.18); }
+
+/* decode: rune → parts → camera */
+.bk-decode { display: grid; gap: var(--gutter); }
+.bk-step { border-radius: var(--r-lg); padding: 1.1rem 1.2rem 1.4rem; display: grid; gap: 1rem; align-content: start; }
+.bk-step .chip { justify-self: start; }
+.bk-step__art { position: relative; width: min(72%, 18rem); justify-self: center; aspect-ratio: 1; }
+.bk-step__art svg { width: 100%; height: 100%; }
+.bk-step figcaption { font-size: var(--t-small); line-height: 1.5; }
+.bk-parts .p-lens, .bk-parts .p-glass { color: var(--cream); }
+.bk-parts .p-viewfinder { color: var(--glacier); }
+.bk-parts .p-handles { color: var(--leaf); }
+.bk-parts .p-tripod { color: var(--sage); }
+.bk-legend { display: grid; gap: 0.35rem; }
+.bk-legend li { display: flex; align-items: center; gap: 0.55rem; }
+.bk-legend i { width: 0.85rem; height: 0.85rem; border-radius: 50%; flex: none; }
+.bk-camera { color: var(--forest); }
+.bk-camera > svg { position: relative; z-index: 1; }
+.bk-camera__mark { position: absolute; inset: 0; z-index: 0; color: var(--cream); }
+.bk-camera__mark svg { width: 100%; height: 100%; }
+@media (min-width: 900px) { .bk-decode { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.bk-tile__art--sky { position: absolute !important; left: 50%; top: 22%; transform: translateX(-50%); }

@@ -6,8 +6,8 @@ LOGOS (logos/ as SVG, logos/png/ as transparent PNG, 2000 px)
 - ruben-svanerud-lockup-stacked-*  for square and portrait formats
 - ruben-svanerud-wordmark(-stacked)-*  name only
 - rubens-cut-*                     the handle, with the cut through "cut" (-signal = red dot)
-- symbol-*                         the camera: soft, hand-made, lens in the exact centre
-- symbol-open-*                    the camera with an open lens, for use on photos (the subject shows through)
+- symbol-*                         the camera rune: looks like a rock carving, is a camera on a tripod seen from the front
+                                   (ring + dot = lens and glass, top stroke = viewfinder, arms = handles, legs = tripod)
 - avatar-*                         profile pictures
 Colour variants: forest, cream, ink, leaf. Use cream on forest or photos, and forest on cream, sage or leaf.
 

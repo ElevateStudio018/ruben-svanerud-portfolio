@@ -183,7 +183,7 @@ PROJECTS = [
 ]
 
 # Home hero. focus = where the frame symbol sits, as fractions of the image (the two cable cars).
-HERO = {'img': 'ski-gondola', 'focus': (0.494, 0.552)}
+HERO = {'img': 'ski-gondola', 'focus': (0.5, 0.3)}   # where the mark sits: the calm sky above the cable cars
 
 # Default focal point per image (object-position), so crops keep the subject
 FOCUS = {

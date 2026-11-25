@@ -2,8 +2,7 @@
 """Ruben Svanerud logo suite, generated as clean SVG.
 
 - Type set in Figtree (OFL) via HarfBuzz shaping, converted to outlines (no font needed to display).
-- The symbol is a soft, slightly hand-made camera (shapely geometry). Its lens centre is the centre of the box,
-  so it can sit with the lens over a subject.
+- The symbol is a rune that hides a camera on a tripod seen from the front (painted strokes, shapely geometry).
 - "rubens.cut" gets a literal cut: a thin diagonal slice through "cut", top half nudged right.
 
 usage: python3 src/brand/logos.py        -> brand/logos/*.svg (+ currentColor copies in assets/logo/ for inline use)
@@ -65,52 +64,86 @@ def metrics(weight=700, size=100):
     return {'cap': os2.sCapHeight * size / upm, 'x': os2.sxHeight * size / upm,
             'asc': tt['hhea'].ascent * size / upm, 'desc': -tt['hhea'].descent * size / upm}
 
-# ---------------------------------------------------------------- the camera symbol
-from shapely.geometry import Point, Polygon, box
+# ---------------------------------------------------------------- the symbol: a camera rune
+# At first glance a petroglyph / branding-iron rune (a figure with its arms up). Decoded, it is a camera on a
+# tripod seen from the front: two brackets make the LENS, the dot is the GLASS, the short stroke on top is the
+# VIEWFINDER, the arms are the rig's HANDLES, and the brackets step down into a TRIPOD with the middle stroke.
+import random
+from shapely.geometry import Point, LineString, Polygon
 from shapely.ops import unary_union
 from shapely.geometry.polygon import orient
 
 
-def _rrect(x0, y0, x1, y1, r):
-    return box(x0 + r, y0 + r, x1 - r, y1 - r).buffer(r, quad_segs=24)
+def _cubic(p0, c1, c2, p3, n=40):
+    out = []
+    for i in range(n + 1):
+        t = i / n; mt = 1 - t
+        out.append((mt**3 * p0[0] + 3 * mt * mt * t * c1[0] + 3 * mt * t * t * c2[0] + t**3 * p3[0],
+                    mt**3 * p0[1] + 3 * mt * mt * t * c1[1] + 3 * mt * t * t * c2[1] + t**3 * p3[1]))
+    return out
 
 
-def _wobble(geom, amp, seed):
-    """Hand-made feel: nudge every outline point a little, smoothly around the centre."""
-    cx, cy = 50.0, 50.0
-    def f(coords):
+def _chain(*segs):
+    pts = list(segs[0])
+    for sg in segs[1:]:
+        pts += list(sg)[1:]
+    return pts
+
+
+def _mirror(pts):
+    return [(100 - x, y) for x, y in pts]
+
+
+def _brush(pts, w, seed=0, swell=0.10, ends=0.12):
+    """Painted stroke: hulls of consecutive discs whose radius breathes along the stroke."""
+    rnd = random.Random(seed)
+    ph1, ph2 = rnd.random() * 6.28, rnd.random() * 6.28
+    n = len(pts)
+    discs = []
+    for i, (x, y) in enumerate(pts):
+        t = i / (n - 1)
+        r = w / 2 * (1 + swell * 0.7 * math.sin(t * 7 + ph1) + swell * 0.5 * math.sin(t * 17 + ph2) + ends * (abs(2 * t - 1) ** 6))
+        discs.append(Point(x, y).buffer(r, quad_segs=10))
+    return unary_union([unary_union([discs[i], discs[i + 1]]).convex_hull for i in range(n - 1)])
+
+
+def _grain(geom, amp=0.42, seed=1):
+    """Dry-brush edge, like a hand-painted or branded mark."""
+    rnd = random.Random(seed)
+    def ring(coords):
+        pts = list(LineString(coords).segmentize(0.6).coords)[:-1]
+        n = len(pts); ph = [rnd.random() * 6.28 for _ in range(3)]
         out = []
-        for x, y in coords:
-            a = math.atan2(y - cy, x - cx)
-            k = amp * (math.sin(5 * a + seed) * 0.6 + math.sin(11 * a + 2 * seed) * 0.4)
-            d = math.hypot(x - cx, y - cy) or 1
-            out.append((x + (x - cx) / d * k, y + (y - cy) / d * k))
+        for i, (x, y) in enumerate(pts):
+            (px, py), (qx, qy) = pts[i - 1], pts[(i + 1) % n]
+            tx, ty = qx - px, qy - py; L = math.hypot(tx, ty) or 1
+            k = amp * (0.65 * math.sin(i * 0.6 * 0.45 + ph[0]) + 0.35 * math.sin(i * 0.6 * 1.25 + ph[1]))
+            out.append((x + ty / L * k, y - tx / L * k))
         return out
-    return Polygon(f(geom.exterior.coords), [f(i.coords) for i in geom.interiors])
+    polys = [geom] if geom.geom_type == 'Polygon' else list(geom.geoms)
+    return unary_union([Polygon(ring(p.exterior.coords), [ring(i.coords) for i in p.interiors]).buffer(0) for p in polys])
 
 
-def _camera(open_lens=False):
-    """A soft, slightly hand-made camera in a 0..100 box. The lens centre is exactly (50, 50), so the symbol
-    can be placed with its lens over a subject (the cable cars on the home page)."""
-    body = _rrect(7, 23, 93, 77, 17)
-    hump = _rrect(17, 11, 45, 32, 8)          # viewfinder
-    button = _rrect(66, 15, 80, 28, 4.5)      # shutter
-    shell = _wobble(unary_union([body, hump, button]), 0.55, 0.7)
-    lens = Point(50, 50).buffer(21.5, quad_segs=40)
-    if open_lens:      # for use on photos: the subject shows through the lens
-        return shell.difference(lens)
-    glass = Point(50, 50).buffer(12.5, quad_segs=40).difference(Point(54.6, 45.4).buffer(3.6, quad_segs=20))
-    return unary_union([shell.difference(lens), glass])
+def _rune_parts(w=8.0, seed=2):
+    arm = _cubic((73, 9), (70, 16), (64, 22), (57.5, 25.5))
+    arc = _cubic((57.5, 25.5), (72, 30), (72, 54), (58, 60.5))
+    leg = _cubic((58, 60.5), (64, 70), (72, 81), (79, 94))
+    return {
+        'handles': unary_union([_brush(arm, w, seed), _brush(_mirror(arm), w, seed + 11)]),
+        'lens': unary_union([_brush(arc, w, seed + 1), _brush(_mirror(arc), w, seed + 12)]),
+        'glass': Point(50, 43).buffer(w * 0.62, quad_segs=16),
+        'viewfinder': _brush(_cubic((50, 5), (50, 10), (50, 15), (50, 21)), w * 0.95, seed + 5),
+        'tripod': unary_union([_brush(leg, w, seed + 2), _brush(_mirror(leg), w, seed + 13),
+                               _brush(_cubic((50, 62), (50, 72), (50.5, 84), (50, 95)), w, seed + 3)]),
+    }
 
 
-_CAMERA = _camera()
-_CAMERA_OPEN = _camera(open_lens=True)
+_PARTS = _rune_parts()
+_RUNE = _grain(unary_union(list(_PARTS.values())), 0.5, 2)
 
 
-def symbol_path(x=0, y=0, size=100, open_lens=False):
-    s = size / 100.0
-    cam = _CAMERA_OPEN if open_lens else _CAMERA
-    geoms = [cam] if cam.geom_type == 'Polygon' else list(cam.geoms)
+def _geom_path(geom, x, y, s):
+    geoms = [geom] if geom.geom_type == 'Polygon' else [g for g in geom.geoms if g.geom_type == 'Polygon']
     d = []
     for g in geoms:
         g = orient(g, 1.0)              # holes wind the other way, so the default nonzero fill rule works everywhere
@@ -118,6 +151,17 @@ def symbol_path(x=0, y=0, size=100, open_lens=False):
             pts = list(ring.coords)[:-1]
             d.append('M' + ' L'.join(f'{x + px * s:.2f} {y + py * s:.2f}' for px, py in pts) + ' Z')
     return ' '.join(d)
+
+
+def symbol_path(x=0, y=0, size=100):
+    return _geom_path(_RUNE, x, y, size / 100.0)
+
+
+def symbol_parts_svg():
+    """The rune split into its camera parts (classes p-lens, p-glass, p-viewfinder, p-handles, p-tripod)."""
+    body = ''.join(f'<path class="p-{k}" fill="currentColor" d="{_geom_path(_grain(g, 0.5, 2), 0, 0, 1.0)}"/>'
+                   for k, g in _PARTS.items())
+    return svg(100, 100, body, None, 'The Ruben Svanerud mark, split into the parts of a camera')
 
 
 # ---------------------------------------------------------------- svg helpers
@@ -215,21 +259,21 @@ def handle(color, bg=None, dot=None):
     return svg(W, H, body, bg, 'rubens.cut')
 
 
-def symbol(color, bg=None, size=100, pad=0, open_lens=False):
+def symbol(color, bg=None, size=100, pad=0):
     S = size + pad * 2
-    return svg(S, S, f'<path fill="{color}" d="{symbol_path(pad, pad, size, open_lens)}"/>', bg, 'Ruben Svanerud camera symbol')
+    return svg(S, S, f'<path fill="{color}" d="{symbol_path(pad, pad, size)}"/>', bg, 'Ruben Svanerud symbol')
 
 
 def lockup(color, bg=None):
     size = 100
     m = metrics(700, size)
-    sym = size * 1.62
-    gap = size * 0.22
+    sym = size * 1.18
+    gap = size * 0.2
     pad = 6
     tb, w = cut_first_glyph('Ruben Svanerud', 700, size, -0.035, pad + sym + gap, pad + sym / 2 + m['cap'] / 2, color)
     W = pad * 2 + sym + gap + w
     H = pad * 2 + sym
-    body = f'<path fill="{color}" d="{symbol_path(pad - sym * 0.06, pad, sym)}"/>' + tb
+    body = f'<path fill="{color}" d="{symbol_path(pad - sym * 0.1, pad, sym)}"/>' + tb
     return svg(W, H, body, bg, 'Ruben Svanerud')
 
 
@@ -241,19 +285,19 @@ def lockup_stacked(color, bg=None):
     d1, w1 = text_path('Ruben', 700, size, tracking=-0.035, x=0, y=0)
     d2, w2 = text_path('Svanerud', 700, size, tracking=-0.035, x=0, y=0)
     W = max(w1, w2) + pad * 2
-    sym = W * 0.5
+    sym = W * 0.4
     top = pad
-    ty = top + sym * 0.8 + size * 0.42 + m['cap']
+    ty = top + sym + size * 0.3 + m['cap']
     b1, _ = cut_first_glyph('Ruben', 700, size, -0.035, pad + (W - 2 * pad - w1) / 2, ty, color)
     d2, _ = text_path('Svanerud', 700, size, tracking=-0.035, x=pad + (W - 2 * pad - w2) / 2, y=ty + lh)
     H = ty + lh + m['desc'] * 0.5 + pad
-    body = (f'<path fill="{color}" d="{symbol_path((W - sym) / 2, top - sym * 0.1, sym)}"/>' + b1 +
+    body = (f'<path fill="{color}" d="{symbol_path((W - sym) / 2, top, sym)}"/>' + b1 +
             f'<path fill="{color}" d="{d2}"/>')
     return svg(W, H, body, bg, 'Ruben Svanerud')
 
 
 def avatar(fg, bg, size=1080):
-    s = size * 0.66
+    s = size * 0.62
     return svg(size, size, f'<path fill="{fg}" d="{symbol_path((size - s) / 2, (size - s) / 2, s)}"/>', bg, 'Ruben Svanerud')
 
 
@@ -267,7 +311,6 @@ if __name__ == '__main__':
         save(f'ruben-svanerud-wordmark-stacked-{vname}.svg', wordmark(col, stacked=True))
         save(f'rubens-cut-{vname}.svg', handle(col))
         save(f'symbol-{vname}.svg', symbol(col))
-        save(f'symbol-open-{vname}.svg', symbol(col, open_lens=True))
     save('rubens-cut-cream-signal.svg', handle(P['cream'], dot=P['signal']))
     save('rubens-cut-forest-signal.svg', handle(P['forest'], dot=P['signal']))
     save('avatar-forest.svg', avatar(P['cream'], P['forest']))
@@ -275,7 +318,7 @@ if __name__ == '__main__':
     save('avatar-cream.svg', avatar(P['forest'], P['cream']))
     # currentColor copies for inlining in the site
     os.makedirs(INLINE, exist_ok=True)
-    for name, content in {'symbol': symbol('currentColor'), 'symbol-open': symbol('currentColor', open_lens=True), 'lockup': lockup('currentColor'),
+    for name, content in {'symbol': symbol('currentColor'),  'symbol-parts': symbol_parts_svg(), 'lockup': lockup('currentColor'),
                           'wordmark': wordmark('currentColor'), 'wordmark-stacked': wordmark('currentColor', stacked=True),
                           'handle': handle('currentColor', dot='var(--signal, #e5432d)')}.items():
         with open(os.path.join(INLINE, name + '.svg'), 'w') as f:

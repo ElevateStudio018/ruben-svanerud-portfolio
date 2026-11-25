@@ -10,7 +10,7 @@ The site is plain HTML, CSS and JS with no framework and no runtime dependencies
 - `assets/css/tokens.css` – every colour, type size, space and timing; `assets/css/site.css` uses only these
 - `assets/js/site.js` – nav state, full-screen menu, one reveal pattern, YouTube facade and dialog
 - `src/images.py` – turns `src/raw/*.jpg` into WebP sets in `assets/img/` and writes `src/images.json`
-- `src/brand/logos.py` – the logo suite as SVG (Figtree outlines via HarfBuzz; the camera symbol is built with shapely) → `brand/logos/` and currentColor copies in `assets/logo/` that the templates inline
+- `src/brand/logos.py` – the logo suite as SVG (Figtree outlines via HarfBuzz; the rune is painted strokes built with shapely) → `brand/logos/` and currentColor copies in `assets/logo/` that the templates inline
 - `src/brand/shapes.py` – the four organic shapes → `assets/shapes/`
 - `src/brand/render.py` – PNG exports, templates (avatar, YouTube banner, end card, lower third, watermark, business card, IG post) and `brand/ruben-svanerud-brand-kit.zip`
 - `assets/css/brand.css` – styles for the brand kit page only
@@ -40,10 +40,11 @@ python3 src/brand/logos.py && python3 src/brand/shapes.py && python3 src/brand/r
   The client likes image-heavy layouts, bento grids, scroll rows, colour blocks and overlapping cards; avoid purely
   typographic sections, tables, text lists, centred minimal sections and split image/text heroes.
   Do not hard-code values in components; add a token instead.
-- **Logo.** The symbol is a soft, hand-made camera whose lens is the exact centre of its box. On the home hero the lens
-  sits over the cable cars (`HERO.focus` in `src/site_data.py`). The "cut" lives in the type (the R and rubens.cut),
-  never as a slash through the camera – that reads as "no photography". Never redraw the logo by hand – change
-  `src/brand/logos.py` and regenerate.
+- **Logo.** The symbol is a painted rune that hides a camera on a tripod seen from the front: ring + dot = lens,
+  top stroke = viewfinder, arms = rig handles, three legs = tripod. It should look wild at first and only make
+  sense once explained (brand page section "The idea", linked from the home hero chip). Put it on calm parts of photos
+  (`HERO.focus` in `src/site_data.py`), never over faces. The "cut" lives in the type (the R and rubens.cut).
+  Never redraw the logo by hand – change `src/brand/logos.py` and regenerate.
 - **Motion.** One entrance pattern (`data-reveal`, 560 ms, once). No parallax on text and no scroll-jacking.
   `prefers-reduced-motion` must give a complete static page.
 - **Mobile first.** Check 390, 768 and 1440 after every visual change: no horizontal scroll, tap targets ≥ 44 px, and no

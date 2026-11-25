@@ -48,7 +48,7 @@
       var y = (H - ih * s) / 2 + f[1] * ih * s;
       frame.style.left = (x / W * 100) + '%';
       frame.style.top = (y / H * 100) + '%';
-      frame.style.width = (W < 700 ? Math.min(W * 0.96, 400) : Math.min(H * 0.5, W * 0.38, iw * s * 0.3)) + 'px';
+      frame.style.width = (W < 700 ? Math.min(W * 0.46, 200) : Math.min(H * 0.34, W * 0.22)) + 'px';
     };
     if (img.complete) placeFrame(); else img.addEventListener('load', placeFrame);
     window.addEventListener('resize', placeFrame);
