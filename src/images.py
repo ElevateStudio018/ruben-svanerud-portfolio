@@ -17,7 +17,6 @@ os.makedirs(OUT, exist_ok=True)
 IMAGES = {
     # For the Love of Ski
     'ski-gondola':   ('ski-148.jpg', None),
-    'ski-gondola-tall': ('ski-gondola-portrait.jpg', None),
     'ski-powder':    ('ski-113.jpg', (0, 0, 1000, 1166)),
     'ski-goggles':   ('ski-004.jpg', None),
     'ski-trees':     ('ski-070.jpg', None),

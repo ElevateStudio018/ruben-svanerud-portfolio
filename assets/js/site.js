@@ -40,8 +40,7 @@
     var img = card.querySelector('.hero__media img');
     var placeFrame = function () {
       if (!img || !img.naturalWidth) return;
-      var tall = (img.currentSrc || '').indexOf('-tall-') !== -1;
-      var f = (card.getAttribute(tall ? 'data-focus-tall' : 'data-focus') || '0.5,0.5').split(',').map(Number);
+      var f = (card.getAttribute('data-focus') || '0.5,0.5').split(',').map(Number);
       var W = card.clientWidth, H = card.clientHeight;
       var iw = img.naturalWidth, ih = img.naturalHeight;
       var s = Math.max(W / iw, H / ih);
@@ -49,10 +48,32 @@
       var y = (H - ih * s) / 2 + f[1] * ih * s;
       frame.style.left = (x / W * 100) + '%';
       frame.style.top = (y / H * 100) + '%';
-      if (!tall) frame.style.width = Math.min(H * 0.5, W * 0.4, iw * s * 0.3) + 'px';
+      frame.style.width = (W < 700 ? Math.min(W * 0.86, 340) : Math.min(H * 0.5, W * 0.4, iw * s * 0.3)) + 'px';
     };
     if (img.complete) placeFrame(); else img.addEventListener('load', placeFrame);
     window.addEventListener('resize', placeFrame);
+  }
+
+  /* stills masonry: put each picture in the shortest column (keeps columns even) */
+  var mason = doc.querySelector('[data-masonry]');
+  if (mason) {
+    var figs = Array.prototype.slice.call(mason.children);
+    var layout = function () {
+      var n = window.innerWidth >= 1025 ? 3 : (window.innerWidth >= 640 ? 2 : 1);
+      if (mason.getAttribute('data-cols') === String(n)) return;
+      mason.setAttribute('data-cols', String(n));
+      mason.classList.add('is-js');
+      var cols = [], heights = [];
+      mason.innerHTML = '';
+      for (var c = 0; c < n; c++) { var col = doc.createElement('div'); col.className = 'm-col'; mason.appendChild(col); cols.push(col); heights.push(0); }
+      figs.forEach(function (fig) {
+        var k = heights.indexOf(Math.min.apply(null, heights));
+        cols[k].appendChild(fig);
+        heights[k] += 1 / Number(fig.getAttribute('data-ar') || 1.5) + 0.12;
+      });
+    };
+    layout();
+    window.addEventListener('resize', layout);
   }
 
   /* entrance: one pattern, once per element */

@@ -86,7 +86,7 @@ for _pr in D.PROJECTS:
             cats.append(_c)
 common = dict(preview=getattr(D, 'PREVIEW', False), person=D.PERSON, projects=D.PROJECTS, images=images, alt=D.ALT,
               short_form=D.SHORT_FORM, stills=D.STILLS, make=D.MAKE, intro=D.INTRO, hero_d=D.HERO, cats=cats,
-              quote_popcorn=D.QUOTE_POPCORN, titles={pr['slug']: pr['title'] for pr in D.PROJECTS})
+              quote_popcorn=D.QUOTE_POPCORN, focus=D.FOCUS, home_stills=D.HOME_STILLS, titles={pr['slug']: pr['title'] for pr in D.PROJECTS})
 
 
 def render(tpl, out, **ctx):
@@ -162,14 +162,15 @@ PALETTE = [
     ('Leaf', '#9FCB6B', '159 203 107', 'Bright green: big colour blocks', 'tone-leaf'),
     ('Sage', '#C6DCC0', '198 220 192', 'Soft green: panels', 'tone-sage'),
     ('Cream', '#F2EBDD', '242 235 221', 'Paper, and the logo on dark and on photos', 'tone-cream2'),
+    ('Glacier', '#BCD5E4', '188 213 228', 'Sky and glacier blue from his ski footage: calm colour blocks', 'tone-glacier bk-sw--glacier'),
     ('Ink', '#0E1A14', '14 26 20', 'Body text on cream', 'bk-sw--ink'),
     ('Signal', '#E5432D', '229 67 45', 'Only the play dot and small calls to action', 'bk-sw--signal'),
 ]
 APPS = [('youtube-banner', 'YouTube banner, 2560 × 1440', 'bk-app--w'), ('video-end-card', 'Video end card, 1920 × 1080', 'bk-app--w'),
         ('instagram-post', 'Instagram post, 1080 × 1350', 'bk-app--s'), ('instagram-avatar', 'Profile picture, 1080 × 1080', 'bk-app--s'),
-        ('watermark', 'Watermark, transparent', 'bk-app--s'),
+        ('watermark', 'Watermark, transparent PNG (shown on a still)', 'bk-app--s'),
         ('business-card-front', 'Business card, front', 'bk-app--w'), ('business-card-back', 'Business card, back', 'bk-app--w'),
-        ('lower-third', 'Lower third for video, transparent', 'bk-app--f')]
+        ('lower-third', 'Lower third for video, transparent PNG (shown on a still)', 'bk-app--f')]
 render('brand.html', 'brand/index.html', p='../', section='brand', hero=True, body_class='has-hero',
        palette=PALETTE, apps=APPS,
        title='Brand kit — Ruben Svanerud',

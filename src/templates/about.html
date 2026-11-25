@@ -1,41 +1,40 @@
 {% extends 'base.html' %}
 {%- import 'macros.html' as m with context -%}
 {% block main %}
-<header class="wrap phead">
-  <ul class="chips"><li class="chip chip--leaf">About</li><li class="chip">Uppsala / Stockholm</li></ul>
-  <h1 class="phead__title">Hi, I’m Ruben.</h1>
-</header>
+<section class="pj-hero" aria-label="About">
+  <div class="pj-hero__card">
+    <div class="pj-hero__img">{{ m.img('pop-bts-room', '100vw', eager=True, pos='45% 50%') }}</div>
+    <div class="pj-hero__body on-photo">
+      <ul class="chips chips--row"><li class="chip">About</li><li class="chip">Uppsala / Stockholm</li><li class="chip">Behind the scenes in Milan</li></ul>
+      <h1 class="pj-hero__title">Hi, I’m Ruben.</h1>
+    </div>
+  </div>
+</section>
 
-<section class="wrap ab-hero" aria-label="About Ruben">
-  <figure>
-    <div class="ph">{{ m.img('box-rig-crop', '(min-width: 900px) 40vw, 100vw') }}</div>
-    <figcaption class="label soft cap">Behind the camera at fight night, EM26 Is Next</figcaption>
-  </figure>
-  <div class="ab-text">
-    <p class="big" data-reveal>I make films and photographs, mostly on the move: on skis, at ringside, underwater and in the mountains.</p>
+<section class="wrap ab-intro" aria-label="About Ruben">
+  <p class="intro__text" data-reveal>I make films and photographs, mostly on the move: on skis, at ringside, underwater and in the mountains.</p>
+  <div class="ab-cols">
     <p class="soft" data-reveal>I shoot and edit my own work. My short film <a href="projects/for-the-love-of-ski.html">For the Love of Ski</a> was also my entry to Alpingaraget’s video competition Vinter Edit 2026. In Milan I filmed and edited the first episode of <a href="projects/betting-everything-on-popcorn.html">Mr. Popcorn’s YouTube series</a>, which I count as my best work so far.</p>
     <p class="soft" data-reveal>Alongside the longer films I make short-form video for Instagram, TikTok and YouTube, and I’m open to working with brands and people.</p>
-    <div class="pills" data-reveal>
-      <a class="pill pill--forest" href="mailto:{{ person.email }}">Email me {{ m.arrow() }}</a>
-      <a class="pill pill--ghost" href="projects.html"><span>See the projects</span></a>
-    </div>
-    <div class="facts" data-reveal>
-      <div class="fact tone-forest"><span class="label soft">Based in</span><b>Uppsala and Stockholm, Sweden</b></div>
-      <div class="fact tone-sage"><span class="label">Work</span><b>Film, photo and editing</b></div>
-      <div class="fact tone-leaf"><span class="label">Edits in</span><b>DaVinci Resolve</b></div>
-      <div class="fact tone-cream2"><span class="label soft">Shoots</span><b>Skiing, boxing, underwater, travel</b></div>
-      <div class="fact tone-pine"><span class="label soft">Elsewhere</span><b>{% for s in person.social %}<a href="{{ s.url }}" rel="noopener" target="_blank">{{ s.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</b></div>
-      <div class="fact tone-cream2"><span class="label soft">Email</span><b><a href="mailto:{{ person.email }}" style="overflow-wrap:anywhere">{{ person.email }}</a></b></div>
-    </div>
+  </div>
+  <ul class="chips ab-chips" data-reveal aria-label="Facts">
+    <li class="chip chip--leaf">Based in Uppsala and Stockholm</li><li class="chip">Film, photo and editing</li>
+    <li class="chip">Edits in DaVinci Resolve</li><li class="chip">Skiing · boxing · underwater · travel</li>
+  </ul>
+  <div class="pills" data-reveal>
+    <a class="pill pill--forest" href="mailto:{{ person.email }}">Email me {{ m.arrow() }}</a>
+    {%- for s in person.social %}
+    <a class="pill pill--ghost" href="{{ s.url }}" rel="noopener" target="_blank"><span>{{ s.name }} ↗</span></a>
+    {%- endfor %}
   </div>
 </section>
 
 <section class="wrap" aria-label="Pictures">
   <div class="mosaic">
     <div class="ph" data-reveal>{{ m.img('dive-wreck', '(min-width: 768px) 66vw, 100vw') }}</div>
-    <div class="ph" data-reveal>{{ m.img('ski-powder', '(min-width: 768px) 33vw, 100vw', pos='8% 50%') }}</div>
-    <div class="ph" data-reveal>{{ m.img('keb-climb', '(min-width: 768px) 33vw, 100vw', pos='70% 50%') }}</div>
-    <div class="ph" data-reveal>{{ m.img('pop-milan', '(min-width: 768px) 66vw, 100vw') }}</div>
+    <div class="ph" data-reveal>{{ m.img('box-rig-crop', '(min-width: 768px) 33vw, 100vw') }}</div>
+    <div class="ph" data-reveal>{{ m.img('ski-powder', '(min-width: 768px) 33vw, 100vw') }}</div>
+    <div class="ph" data-reveal>{{ m.img('keb-hike', '(min-width: 768px) 66vw, 100vw') }}</div>
   </div>
 </section>
 

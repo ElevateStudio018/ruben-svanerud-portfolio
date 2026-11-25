@@ -21,7 +21,6 @@ PERSON = {
 
 ALT = {
     'ski-gondola': 'Two cable cars crossing a snow-covered glacier under a clear blue sky',
-    'ski-gondola-tall': 'Two cable cars crossing a snow-covered glacier under a clear blue sky',
     'ski-powder': 'Skier in a red jacket turning through powder, snow spraying in the sun',
     'ski-goggles': 'Skier in a red jacket and white helmet looking out over the mountains',
     'ski-trees': 'Skier jumping between snow-covered birch branches',
@@ -149,9 +148,9 @@ PROJECTS = [
         'cover': 'keb-climb',
         'thumb': 'keb-climb',
         'gallery': [
-            ('full', ['keb-hike']),
+            ('wn', ['keb-hike', 'keb-climb']),
         ],
-        'gallery_caption': 'Still from the film.',
+        'gallery_caption': 'Left: still from the film. Right: the photograph of the climb.',
         'links': [
             {'label': 'Film on Instagram', 'url': 'https://www.instagram.com/reel/DgIWM6nN4HL/'},
             {'label': 'Film on TikTok', 'url': 'https://www.tiktok.com/@rubens.cut/video/7711771333570350358'},
@@ -184,7 +183,18 @@ PROJECTS = [
 ]
 
 # Home hero. focus = where the frame symbol sits, as fractions of the image (the two cable cars).
-HERO = {'img': 'ski-gondola', 'tall': 'ski-gondola-tall', 'focus': (0.488, 0.54), 'focus_tall': (0.5, 0.27)}
+HERO = {'img': 'ski-gondola', 'focus': (0.488, 0.54)}
+
+# Default focal point per image (object-position), so crops keep the subject
+FOCUS = {
+    'ski-goggles': '82% 42%', 'ski-powder': '8% 50%', 'pop-bts-street': '22% 50%', 'pop-street': '62% 42%',
+    'keb-climb': '70% 50%', 'box-win': '50% 36%', 'box-rig': '50% 100%', 'dive-turtle': '42% 50%',
+    'pop-milan': '52% 60%', 'dive-surface': '40% 50%',
+}
+
+# Stills row on the home page: frames not already used elsewhere on the page
+HOME_STILLS = ['ski-trees', 'dive-wreck', 'pop-statue', 'keb-hike', 'dive-torch', 'ski-goggles', 'pop-orange',
+               'dive-coral', 'pop-night']
 
 # Inline images in the intro sentence
 INTRO = [('ski-air', 'ski films'), ('pop-street', 'YouTube episodes'), ('dive-reef', 'underwater series'),
@@ -193,13 +203,13 @@ INTRO = [('ski-air', 'ski films'), ('pop-street', 'YouTube episodes'), ('dive-re
 # What Ruben makes, one card per kind of work, each pointing at a real project
 MAKE = [
     {'title': 'Short films', 'text': 'Season edits cut into short films, like For the Love of Ski.',
-     'img': 'ski-trees', 'slug': 'for-the-love-of-ski', 'tone': 'forest'},
+     'img': 'ski-powder', 'slug': 'for-the-love-of-ski', 'tone': 'forest'},
     {'title': 'YouTube episodes', 'text': 'Filmed and edited on location: EP.01 for Mr. Popcorn in Milan.',
-     'img': 'pop-milan', 'slug': 'betting-everything-on-popcorn', 'tone': 'sage'},
+     'img': 'pop-station', 'slug': 'betting-everything-on-popcorn', 'tone': 'sage'},
     {'title': 'Sport, behind the scenes', 'text': 'Ringside and backstage with the boxer Erwa.',
-     'img': 'box-win', 'img_pos': '50% 30%', 'slug': 'em26-is-next', 'tone': 'leaf'},
+     'img': 'box-rig-crop', 'slug': 'em26-is-next', 'tone': 'leaf'},
     {'title': 'Underwater & outdoors', 'text': 'Reefs, a sunken aircraft and Kebnekaise, in photo and film.',
-     'img': 'dive-torch', 'slug': 'a-different-planet', 'tone': 'pine'},
+     'img': 'dive-surface', 'slug': 'a-different-planet', 'tone': 'glacier'},
 ]
 
 # Stills row (home) and Stills page: (image, project slug, caption)

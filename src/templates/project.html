@@ -4,7 +4,7 @@
 {%- if pr.cover_pair %}
 <section class="pj-hero" aria-label="{{ pr.title }}">
   <div class="pj-hero__card tone-forest" style="align-items:stretch">
-    <div class="film__shape" aria-hidden="true">{{ shape(4) }}</div>
+    <div class="film__shape pj-pair__shape" aria-hidden="true">{{ shape(4) }}</div>
     <div class="pj-hero__top"><a class="chip" href="../projects.html">← All projects</a><span class="chip">{{ '%02d' % num }} / {{ '%02d' % total }}</span></div>
     <div class="pj-hero__body pj-pair">
       <div class="pj-pair__text">
@@ -35,19 +35,14 @@
 {%- endif %}
 
 <section class="wrap pj-intro" aria-label="About the project">
-  <dl class="facts" style="margin-top:0">
-    <div class="fact tone-sage"><dt class="label">Type</dt><dd><b>{{ pr.kind }}</b></dd></div>
-    {%- if pr.client %}<div class="fact tone-leaf"><dt class="label">Client</dt><dd><b>{{ pr.client }}</b></dd></div>{% endif %}
-    {%- if pr.location and not pr.client %}<div class="fact tone-leaf"><dt class="label">Location</dt><dd><b>{{ pr.location }}</b></dd></div>{% endif %}
-    {%- if pr.runtime %}<div class="fact tone-cream2"><dt class="label soft">Runtime</dt><dd><b>{{ pr.runtime }}</b></dd></div>{% endif %}
-    {%- if pr.credit %}<div class="fact tone-cream2"><dt class="label soft">Credit</dt><dd><b>{{ pr.credit }}</b></dd></div>{% endif %}
-    {%- if pr.client and pr.location %}<div class="fact tone-cream2"><dt class="label soft">Location</dt><dd><b>{{ pr.location }}</b></dd></div>{% endif %}
-    <div class="fact tone-cream2"><dt class="label soft">Year</dt><dd><b>{{ pr.year }}</b></dd></div>
-  </dl>
-  <div style="display:grid;gap:var(--gap-s);align-content:start">
-    <p class="pj-lead">{{ pr.lead }}</p>
+  <p class="pj-lead" data-reveal>{{ pr.lead }}</p>
+  <div class="pj-side" data-reveal>
+    {%- if pr.client %}<p class="label soft">Client</p><p class="pj-side__v">{{ pr.client }}</p>{% endif %}
+    {%- if pr.credit %}<p class="label soft">Credit</p><p class="pj-side__v">{{ pr.credit }}</p>{% endif %}
     {%- if pr.primary %}
     <div class="pills"><a class="pill pill--forest" href="{{ pr.primary.url }}" rel="noopener" target="_blank"><span class="pill__dot" aria-hidden="true"></span>{{ pr.primary.label }} {{ m.ext() }}</a></div>
+    {%- elif pr.youtube %}
+    <div class="pills"><button class="pill pill--forest" type="button" onclick="document.querySelector('[data-yt-inline] button').click();document.querySelector('[data-yt-inline]').scrollIntoView({block:'center'})"><span class="pill__dot" aria-hidden="true"></span>Play film<span class="pill__time">{{ pr.runtime }}</span></button></div>
     {%- endif %}
   </div>
 </section>
@@ -68,7 +63,7 @@
     {%- for kind, names in pr.gallery %}
     <div class="grow grow--{{ kind }}" data-reveal>
       {%- for name in names %}
-      <button class="ph" type="button" data-lightbox="{{ name }}" data-src="{{ p }}assets/img/{{ name }}-{{ (images[name].sizes|select('le', 2000)|list)[-1] }}.webp" data-cap="{{ alt[name] }}" aria-label="Open image: {{ alt[name] }}">{{ m.img(name, '100vw' if kind == 'full' else '(min-width: 768px) 50vw, 100vw', pos=('8% 50%' if name == 'ski-powder' else None)) }}</button>
+      <button class="ph" type="button" data-lightbox="{{ name }}" data-src="{{ p }}assets/img/{{ name }}-{{ (images[name].sizes|select('le', 2000)|list)[-1] }}.webp" data-cap="{{ alt[name] }}" aria-label="Open image: {{ alt[name] }}">{{ m.img(name, '100vw' if kind == 'full' else '(min-width: 768px) 50vw, 100vw') }}</button>
       {%- endfor %}
     </div>
     {%- endfor %}
@@ -84,9 +79,22 @@
   {%- endfor %}
 </section>
 
+<section class="row-sec" aria-labelledby="more-work" style="padding-top:0">
+  <div class="wrap shead"><h2 class="shead__title" id="more-work" style="font-size:var(--t-h3)">More work</h2>
+    <div class="row-ctl" data-row-for="more-row"><button type="button" data-dir="-1" aria-label="Scroll left">←</button><button type="button" data-dir="1" aria-label="Scroll right">→</button></div></div>
+  <ul class="row row--stills" id="more-row">
+    {%- for o in projects if o.slug != pr.slug %}
+    <li><a class="still" href="{{ o.slug }}.html">
+      <div class="ph ph--43 zoom">{{ m.img(o.thumb, '(min-width: 1025px) 31vw, (min-width: 768px) 44vw, 78vw') }}</div>
+      <p class="cap" style="display:grid;gap:0.15rem"><b style="font-size:1.15rem;letter-spacing:-0.02em">{{ o.title|keep }}</b><span class="label soft">{{ o.kind }}</span></p>
+    </a></li>
+    {%- endfor %}
+  </ul>
+</section>
+
 <a class="next" href="{{ nxt.slug }}.html">
   <div class="next__card">
-    <div class="next__img">{{ m.img(nxt.cover or nxt.thumb, '100vw', pos=nxt.thumb_pos) }}</div>
+    <div class="next__img">{{ m.img(nxt.cover or nxt.thumb, '100vw') }}</div>
     <div class="next__body">
       <span class="chip" style="justify-self:start">Next project</span>
       <span class="next__title">{{ nxt.title|keep }}</span>

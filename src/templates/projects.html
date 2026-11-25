@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 {%- import 'macros.html' as m with context -%}
 {% block main %}
-<header class="wrap phead">
-  <ul class="chips"><li class="chip chip--leaf">Index</li><li class="chip">2026</li></ul>
-  <h1 class="phead__title">Projects<sup>{{ '%02d' % projects|length }}</sup></h1>
-  <p class="soft">Films and photo series: a ski season, a YouTube shoot in Milan, reefs, ringside and Kebnekaise.</p>
+<header class="wrap phead phead--collage">
+  <div class="phead__text">
+    <ul class="chips"><li class="chip chip--leaf">Index</li><li class="chip">2026</li></ul>
+    <h1 class="phead__title">Projects<sup>{{ '%02d' % projects|length }}</sup></h1>
+    <p class="soft">Films and photo series: a ski season, a YouTube shoot in Milan, reefs, ringside and Kebnekaise.</p>
+  </div>
+  {{ m.collage(['dive-wreck', 'ski-goggles', 'pop-orange']) }}
 </header>
 
 <section class="wrap" aria-label="Projects">
@@ -29,11 +32,10 @@
   </ul>
 </section>
 
-<section class="cta tone-forest" aria-labelledby="more-title">
-  <div class="cta__shape" aria-hidden="true" style="color:var(--pine)">{{ shape(3) }}</div>
+<section class="cta tone-glacier" aria-labelledby="more-title">
   <h2 class="cta__title" id="more-title" style="font-size:var(--t-h2)">More short-form work on Instagram and TikTok.</h2>
   <div class="pills">
-    <a class="pill pill--cream" href="{{ person.social[0].url }}" rel="noopener" target="_blank">Instagram ↗</a>
+    <a class="pill pill--forest" href="{{ person.social[0].url }}" rel="noopener" target="_blank">Instagram ↗</a>
     <a class="pill pill--ghost" href="{{ person.social[1].url }}" rel="noopener" target="_blank"><span>TikTok ↗</span></a>
   </div>
 </section>

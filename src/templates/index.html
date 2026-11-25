@@ -1,23 +1,16 @@
 {% extends 'base.html' %}
 {%- import 'macros.html' as m with context -%}
 {% block preload %}
-<link rel="preload" as="image" type="image/webp" media="(min-aspect-ratio: 3/4)"
+<link rel="preload" as="image" type="image/webp"
       imagesrcset="{% for w in images[hero_d.img].sizes %}assets/img/{{ hero_d.img }}-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
       imagesizes="max(100vw, 178vh)" fetchpriority="high">
-<link rel="preload" as="image" type="image/webp" media="(max-aspect-ratio: 3/4)"
-      imagesrcset="{% for w in images[hero_d.tall].sizes %}assets/img/{{ hero_d.tall }}-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
-      imagesizes="max(100vw, 50vh)" fetchpriority="high">
 {% endblock %}
 {% block main %}
 {%- set ski = projects[0] %}{% set pop = projects[1] %}{% set dive = projects[2] %}{% set keb = projects[3] %}{% set box = projects[4] %}
 
 <section class="hero" aria-label="Introduction">
-  <div class="hero__card on-photo" data-focus="{{ hero_d.focus|join(',') }}" data-focus-tall="{{ hero_d.focus_tall|join(',') }}">
-    <picture class="hero__media">
-      <source media="(max-aspect-ratio: 3/4)" type="image/webp" sizes="max(100vw, 50vh)"
-              srcset="{% for w in images[hero_d.tall].sizes %}assets/img/{{ hero_d.tall }}-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}">
-      {{ m.img(hero_d.img, 'max(100vw, 178vh)', eager=True) }}
-    </picture>
+  <div class="hero__card on-photo" data-focus="{{ hero_d.focus|join(',') }}">
+    <div class="hero__media">{{ m.img(hero_d.img, 'max(100vw, 178vh)', eager=True, pos=(hero_d.focus[0] * 100)|round(1)|string + '% ' + ((hero_d.focus[1] * 100)|round(1)|string) + '%') }}</div>
     <div class="hero__frame" aria-hidden="true">{{ svg('symbol') }}</div>
     <p class="chip hero__caption">Still from For the Love of Ski</p>
     <div class="hero__bottom">
@@ -39,7 +32,7 @@
   <ul class="chips intro__chips" data-reveal><li class="chip chip--leaf">Hi, I’m Ruben</li><li class="chip">Filmmaker &amp; photographer</li></ul>
   <p class="intro__text" id="intro-text" data-reveal>I make
     {%- for name, words in intro %}
-    <span class="inl">{{ m.img(name, '120px', alt_text='') }}</span>&nbsp;{{ words }}{% if loop.revindex == 2 %} and{% elif not loop.last %},{% endif %}
+    <span class="nw"><span class="inl">{{ m.img(name, '120px', alt_text='') }}</span>&nbsp;{{ words.split(' ')[0] }}</span>{% if ' ' in words %} {{ words.split(' ', 1)[1] }}{% endif %}{% if loop.revindex == 2 %} and{% elif not loop.last %},{% endif %}
     {%- endfor %}, from Uppsala and Stockholm. I shoot it and I cut it.</p>
   <div class="pills intro__more" data-reveal>
     <a class="pill pill--forest" href="about.html">About Ruben {{ m.arrow() }}</a>
@@ -59,7 +52,7 @@
       <div class="tile__img">{{ m.img(pr.thumb, '(min-width: 768px) 25vw, 100vw' if loop.index0 in (1, 2) else '(min-width: 768px) 50vw, 100vw', pos=(pr.thumb_pos or ('62% 50%' if pr.slug == 'betting-everything-on-popcorn' else None))) }}</div>
       <span class="tile__go" aria-hidden="true">→</span>
       <div class="tile__body">
-        <ul class="chips">{% if pr.eyebrow %}<li class="chip">{{ pr.eyebrow }}</li>{% endif %}<li class="chip">{{ pr.kind }}</li><li class="chip">{{ pr.year }}</li></ul>
+        <ul class="chips chips--row">{% if pr.eyebrow %}<li class="chip">{{ pr.eyebrow }}</li>{% endif %}<li class="chip chip--kind">{{ pr.kind }}</li><li class="chip">{{ pr.year }}</li></ul>
         <h3 class="tile__title">{{ pr.title|keep }}</h3>
       </div>
     </a>
@@ -69,7 +62,6 @@
 
 <section class="film tone-forest" aria-labelledby="film-title">
   <div class="film__shape" aria-hidden="true">{{ shape(1) }}</div>
-  <div class="film__shape film__shape--2" aria-hidden="true">{{ shape(3) }}</div>
   <div class="wrap film__grid">
     <div class="film__text" data-reveal>
       <ul class="chips"><li class="chip chip--leaf">Short film</li><li class="chip">{{ ski.runtime }}</li><li class="chip">Vinter Edit 2026</li></ul>
@@ -81,7 +73,7 @@
       </div>
     </div>
     <div class="film__media" data-reveal>
-      <div class="ph ph--169">{{ m.img('ski-trees', '(min-width: 1025px) 55vw, 100vw') }}</div>
+      <div class="ph ph--169">{{ m.img('ski-spin', '(min-width: 1025px) 55vw, 100vw') }}</div>
       <div class="film__poster ph--916">{{ m.img('ski-poster', '(min-width: 1025px) 16vw, 30vw') }}</div>
     </div>
   </div>
@@ -102,10 +94,10 @@
     </div>
   </div>
   <ul class="row row--stills" id="stills-row">
-    {%- for name, slug, cap in stills[:12] %}
+    {%- for name, slug, cap in stills if name in home_stills %}
     <li><figure class="still">
       <div class="ph ph--43">{{ m.img(name, '(min-width: 1025px) 31vw, (min-width: 768px) 44vw, 78vw') }}</div>
-      <figcaption><span class="label soft">{{ cap }}</span><a href="projects/{{ slug }}.html">{{ titles[slug] }}</a></figcaption>
+      <figcaption><span class="label soft">{{ cap }}</span><a href="projects/{{ slug }}.html">{{ titles[slug]|keep }}</a></figcaption>
     </figure></li>
     {%- endfor %}
   </ul>
@@ -148,7 +140,7 @@
   </div>
 </section>
 
-<section class="row-sec tone-cream2" aria-labelledby="vert-title">
+<section class="row-sec tone-glacier" aria-labelledby="vert-title">
   <div class="wrap shead">
     <div>
       <h2 class="shead__title" id="vert-title" data-reveal>Vertical cuts</h2>
@@ -163,7 +155,7 @@
     {%- for s in short_form %}
     <li><a class="still" href="{{ s.url }}" rel="noopener" target="_blank" aria-label="{{ s.label }}, {{ s.kind }} on Instagram (opens in a new tab)">
       <div class="ph ph--916 zoom">{{ m.img(s.img, '(min-width: 1025px) 21vw, (min-width: 768px) 30vw, 62vw', pos=s.pos) }}</div>
-      <p class="cap" style="display:flex;justify-content:space-between;gap:1rem"><b style="font-weight:600">{{ s.label }}</b><span class="label soft">{{ s.kind }} ↗</span></p>
+      <p class="cap" style="display:flex;justify-content:space-between;gap:1rem"><b style="font-weight:600">{{ s.label }}</b><span class="label soft nw">{{ s.kind }} ↗</span></p>
     </a></li>
     {%- endfor %}
   </ul>
@@ -171,7 +163,6 @@
 
 <section class="cta tone-leaf" aria-labelledby="cta-title" style="margin-top:var(--gap-l)">
   <div class="cta__shape" aria-hidden="true">{{ shape(2) }}</div>
-  <div class="cta__shape cta__shape--2" aria-hidden="true">{{ shape(1) }}</div>
   <ul class="chips" style="position:relative"><li class="chip chip--cream">Open for work</li></ul>
   <h2 class="cta__title" id="cta-title" data-reveal>Looking for cool people and brands to work with this winter.</h2>
   <div class="pills">

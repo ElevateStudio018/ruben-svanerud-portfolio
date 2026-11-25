@@ -1,18 +1,21 @@
 {% extends 'base.html' %}
 {%- import 'macros.html' as m with context -%}
 {% block main %}
-<header class="wrap phead">
-  <ul class="chips"><li class="chip chip--leaf">Stills</li><li class="chip">{{ stills|length }} frames</li></ul>
-  <h1 class="phead__title">Stills</h1>
-  <p class="soft">Frames and photographs from the projects. Tap a picture to see it larger.</p>
+<header class="wrap phead phead--collage">
+  <div class="phead__text">
+    <ul class="chips"><li class="chip chip--leaf">Stills</li><li class="chip">{{ stills|length }} frames</li></ul>
+    <h1 class="phead__title">Stills</h1>
+    <p class="soft">Frames and photographs from the projects. Tap a picture to see it larger.</p>
+  </div>
+  {{ m.collage(['keb-climb', 'dive-turtle', 'ski-air']) }}
 </header>
 
 <section class="wrap" aria-label="All stills">
-  <div class="masonry" data-gallery>
+  <div class="masonry" data-masonry>
     {%- for name, slug, cap in stills %}
-    <figure data-reveal>
+    <figure data-reveal data-ar="{{ (images[name].w / images[name].h)|round(3) }}">
       <button class="ph" type="button" data-lightbox="{{ name }}" data-src="assets/img/{{ name }}-{{ (images[name].sizes|select('le', 2000)|list)[-1] }}.webp" data-cap="{{ cap }}, {{ titles[slug] }}" aria-label="Open image: {{ alt[name] }}" style="aspect-ratio:{{ images[name].w }} / {{ images[name].h }};width:100%;padding:0;border:0">{{ m.img(name, '(min-width: 1025px) 32vw, (min-width: 640px) 48vw, 100vw', pos=('8% 50%' if name == 'ski-powder' else None)) }}</button>
-      <figcaption class="cap" style="display:flex;justify-content:space-between;gap:1rem"><span class="label soft">{{ cap }}</span><a href="projects/{{ slug }}.html" style="font-weight:600;font-size:var(--t-small)">{{ titles[slug] }}</a></figcaption>
+      <figcaption class="cap" style="display:flex;justify-content:space-between;gap:1rem"><span class="label soft">{{ cap }}</span><a href="projects/{{ slug }}.html" style="font-weight:600;font-size:var(--t-small)">{{ titles[slug]|keep }}</a></figcaption>
     </figure>
     {%- endfor %}
   </div>

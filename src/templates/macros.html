@@ -6,7 +6,8 @@
      sizes="{{ sizes }}" width="{{ i.w }}" height="{{ i.h }}" alt="{{ alt_text if alt_text is not none else alt[name] }}"
      {%- if cls %} class="{{ cls }}"{% endif %}
      {%- if eager %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async"
-     style="background:{{ i.bg }}{% if pos %};object-position:{{ pos }}{% endif %}">
+     {%- set fpos = pos or focus.get(name) %}
+     style="background:{{ i.bg }}{% if fpos %};object-position:{{ fpos }}{% endif %}">
 {%- endmacro -%}
 
 {%- macro segs(items) -%}
@@ -16,7 +17,7 @@
 {%- macro meta_line(pr) -%}{{ segs([pr.kind, pr.location, pr.year, pr.runtime]) }}{%- endmacro -%}
 
 {%- macro chips(pr, extra='') -%}
-<ul class="chips">
+<ul class="chips chips--row">
   <li class="chip {{ extra }}">{{ pr.kind }}</li>
   {%- if pr.location %}<li class="chip {{ extra }}">{{ pr.location }}</li>{% endif %}
   <li class="chip {{ extra }}">{{ pr.year }}</li>
@@ -26,3 +27,9 @@
 
 {%- macro arrow() -%}<span class="pill__arrow" aria-hidden="true">→</span>{%- endmacro -%}
 {%- macro ext() -%}<span class="vh"> (opens in a new tab)</span><span aria-hidden="true">↗</span>{%- endmacro -%}
+
+{%- macro collage(names) -%}
+<div class="collage" aria-hidden="true">
+  {%- for n in names %}<div class="ph collage__card">{{ img(n, '(min-width: 1025px) 18vw, 30vw', alt_text='') }}</div>{% endfor %}
+</div>
+{%- endmacro -%}

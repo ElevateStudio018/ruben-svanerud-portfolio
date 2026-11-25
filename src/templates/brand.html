@@ -49,13 +49,9 @@
     <div class="fact tone-cream2"><span class="label soft">Don’t</span><b>Stretch, rotate, outline, add shadows or put the logo on busy, light areas of a photo.</b></div>
   </div>
   <div class="bk-dl">
-    <p class="label soft">Download</p>
-    <div class="pills">
-      {%- for f, label in [('ruben-svanerud-lockup-cream', 'Lockup, cream'), ('ruben-svanerud-lockup-forest', 'Lockup, forest'), ('symbol-cream', 'Symbol, cream'), ('symbol-forest', 'Symbol, forest'), ('rubens-cut-cream-signal', 'rubens.cut, cream'), ('ruben-svanerud-wordmark-stacked-forest', 'Stacked, forest')] %}
-      <a class="pill pill--ghost" href="logos/{{ f }}.svg" download><span>{{ label }} · SVG</span></a>
-      <a class="pill pill--ghost" href="logos/png/{{ f }}.png" download><span>PNG</span></a>
-      {%- endfor %}
-    </div>
+    {%- for f, label, tone in [('ruben-svanerud-lockup-cream', 'Lockup · cream', 'tone-forest'), ('ruben-svanerud-lockup-forest', 'Lockup · forest', 'tone-cream2'), ('symbol-cream', 'Symbol · cream', 'tone-pine'), ('symbol-forest', 'Symbol · forest', 'tone-sage'), ('rubens-cut-cream-signal', 'rubens.cut · cream', 'tone-forest'), ('ruben-svanerud-wordmark-stacked-forest', 'Stacked · forest', 'tone-leaf')] %}
+    <div class="bk-dl__item {{ tone }}"><b>{{ label }}</b><span class="pills"><a class="pill pill--ghost" href="logos/{{ f }}.svg" download><span>SVG</span></a><a class="pill pill--ghost" href="logos/png/{{ f }}.png" download><span>PNG</span></a></span></div>
+    {%- endfor %}
   </div>
 </section>
 
@@ -117,7 +113,7 @@
   <div class="bk-apps">
     {%- for f, label, cls in apps %}
     <figure class="bk-app {{ cls }}">
-      <a href="applications/{{ f }}.png" download class="bk-app__img{% if 'lower' in f or 'water' in f %} is-alpha{% endif %}{% if 'card' in f and 'end' not in f %} is-card{% endif %}"><img src="applications/{{ f }}.png" alt="{{ label }}" loading="lazy"></a>
+      <a href="applications/{{ f }}.png" download class="bk-app__img{% if 'card' in f and 'end' not in f %} is-card{% endif %}"><img src="applications/{{ f }}{% if 'lower' in f or 'water' in f %}-preview{% endif %}.png" alt="{{ label }}" loading="lazy"></a>
       <figcaption class="cap"><b style="font-weight:600">{{ label }}</b> <span class="label soft">PNG ↓</span></figcaption>
     </figure>
     {%- endfor %}

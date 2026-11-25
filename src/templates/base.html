@@ -30,6 +30,7 @@
 <script>document.documentElement.classList.add('js');</script>
 <script type="application/ld+json">{{ jsonld|safe }}</script>
 </head>
+{%- import 'macros.html' as m with context %}
 <body class="{{ body_class|default('') }}" id="top">
 <a class="skip" href="#main">Skip to content</a>
 
@@ -45,13 +46,18 @@
 </header>
 
 <div class="menu" id="menu" inert>
-  <div class="menu__shape" aria-hidden="true">{{ shape(2) }}</div>
+  <div class="menu__shape" aria-hidden="true">{{ shape(3) }}</div>
   <nav class="menu__links" aria-label="Menu">
     <a href="{{ p }}index.html"{% if section == 'home' %} aria-current="page"{% endif %}>Home</a>
     <a href="{{ p }}projects.html"{% if section == 'projects' %} aria-current="page"{% endif %}>Projects</a>
     <a href="{{ p }}stills.html"{% if section == 'stills' %} aria-current="page"{% endif %}>Stills</a>
     <a href="{{ p }}about.html"{% if section == 'about' %} aria-current="page"{% endif %}>About</a>
   </nav>
+  <ul class="menu__thumbs" aria-label="Projects">
+    {%- for pr in projects[:3] %}
+    <li><a href="{{ p }}projects/{{ pr.slug }}.html"><span class="ph ph--45">{{ m.img(pr.thumb, '30vw', alt_text='') }}</span><span class="label">{{ pr.title|keep }}</span></a></li>
+    {%- endfor %}
+  </ul>
   <div class="menu__foot">
     <a class="pill pill--cream" href="mailto:{{ person.email }}">{{ person.email }}</a>
     <div class="pills">

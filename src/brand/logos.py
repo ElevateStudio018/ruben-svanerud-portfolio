@@ -85,7 +85,7 @@ def _corner_outline(seed=0):
         s -= A
         return (C + s, 22.0), (1.0, 0.0)
     def width(t):
-        return 12.0 + 3.2 * (abs(2 * t - 1) ** 3) + 0.5 * math.sin(6 * t + seed) + 0.3 * math.sin(15 * t + 2 * seed)
+        return 13.4 + 3.4 * (abs(2 * t - 1) ** 3) + 0.5 * math.sin(6 * t + seed) + 0.3 * math.sin(15 * t + 2 * seed)
     N = 120
     left, right = [], []
     for i in range(N + 1):
@@ -112,11 +112,17 @@ def _rot(p, deg, c=(50, 50)):
     return (c[0] + x * math.cos(a) - y * math.sin(a), c[1] + x * math.sin(a) + y * math.cos(a))
 
 
+SPLICE = (5.5, -5.5)   # the "cut": the top-right corner is offset up and out, like a spliced frame
+
+
 def symbol_path(x=0, y=0, size=100):
     s = size / 100.0
     d = []
     for k, deg in enumerate((0, 90, 180, 270)):
+        dx, dy = SPLICE if deg == 90 else (0.0, 0.0)
         poly = [_rot(p, deg) for p in _corner_outline(seed=k * 1.7)]
+        # keep the whole mark inside the 0..100 box: shrink slightly around the centre
+        poly = [(50 + (px - 50) * 0.9 + dx, 50 + (py - 50) * 0.9 + dy) for px, py in poly]
         d.append('M' + ' L'.join(f'{x + px * s:.2f} {y + py * s:.2f}' for px, py in poly) + ' Z')
     return ' '.join(d)
 
@@ -131,21 +137,48 @@ def save(name, content):
     with open(os.path.join(OUT, name), 'w') as f:
         f.write(content)
 
+# ---------------------------------------------------------------- the cut through R
+_cut_n = [0]
+def cut_first_glyph(text, weight, size, tracking, x, y, color):
+    """Draw `text` with a diagonal slice through its first glyph (top part nudged right), same move as rubens.cut."""
+    first, rest = text[0], text[1:]
+    m = metrics(weight, size)
+    d0, w0 = text_path(first, weight, size, tracking=0, x=x, y=y)
+    # advance of first glyph incl. kerning with the next: measure pair
+    _, wpair = text_path(text[:2], weight, size, tracking=tracking, x=0, y=0)
+    _, wsecond = text_path(text[1], weight, size, tracking=0, x=0, y=0)
+    adv = wpair - wsecond
+    d1, w1 = text_path(rest, weight, size, tracking=tracking, x=x + adv, y=y)
+    x0, x1 = x - 6, x + w0 + 6
+    ya, yb = y - m['cap'] * 0.30, y - m['cap'] * 0.62          # the slice rises left → right through the bowl/leg
+    gap = size * 0.034
+    ly = lambda xx, off: ya + (yb - ya) * (xx - x0) / (x1 - x0) + off
+    top = f'{x0-20},{y-size*2} {x1+20},{y-size*2} {x1+20},{ly(x1+20,-gap):.1f} {x0-20},{ly(x0-20,-gap):.1f}'
+    bot = f'{x0-20},{ly(x0-20,gap):.1f} {x1+20},{ly(x1+20,gap):.1f} {x1+20},{y+size} {x0-20},{y+size}'
+    _cut_n[0] += 1
+    uid = f'r{_cut_n[0]}'
+    body = (f'<defs><clipPath id="t{uid}"><polygon points="{top}"/></clipPath>'
+            f'<clipPath id="b{uid}"><polygon points="{bot}"/></clipPath></defs>'
+            f'<g clip-path="url(#t{uid})"><path fill="{color}" transform="translate({size*0.038:.2f} {-size*0.01:.2f})" d="{d0}"/></g>'
+            f'<g clip-path="url(#b{uid})"><path fill="{color}" d="{d0}"/></g>'
+            f'<path fill="{color}" d="{d1}"/>')
+    return body, adv + w1
+
 # ---------------------------------------------------------------- logos
 def wordmark(color, bg=None, stacked=False):
     size = 100
     m = metrics(700, size)
     pad = 6
     if not stacked:
-        d, w = text_path('Ruben Svanerud', 700, size, tracking=-0.035, x=pad, y=pad + m['asc'] * 0.80)
+        body, w = cut_first_glyph('Ruben Svanerud', 700, size, -0.035, pad, pad + m['asc'] * 0.80, color)
         H = pad * 2 + m['asc'] * 0.80 + m['desc'] * 0.55
-        return svg(w + pad * 2, H, f'<path fill="{color}" d="{d}"/>', bg, 'Ruben Svanerud')
+        return svg(w + pad * 2 + size * 0.04, H, body, bg, 'Ruben Svanerud')
     lh = size * 0.92
-    d1, w1 = text_path('Ruben', 700, size, tracking=-0.035, x=pad, y=pad + m['cap'] + 2)
+    b1, w1 = cut_first_glyph('Ruben', 700, size, -0.035, pad, pad + m['cap'] + 2, color)
     d2, w2 = text_path('Svanerud', 700, size, tracking=-0.035, x=pad, y=pad + m['cap'] + 2 + lh)
     W = max(w1, w2) + pad * 2
     H = pad * 2 + m['cap'] + 2 + lh + m['desc'] * 0.55
-    return svg(W, H, f'<path fill="{color}" d="{d1} {d2}"/>', bg, 'Ruben Svanerud')
+    return svg(W, H, b1 + f'<path fill="{color}" d="{d2}"/>', bg, 'Ruben Svanerud')
 
 
 def handle(color, bg=None, dot=None):
@@ -171,18 +204,19 @@ def handle(color, bg=None, dot=None):
     top = f'{x0 - 10},{-10} {x1 + 10},{-10} {x1 + 10},{yt + (yb - yt) * 0.05} {x0 - 10},{yb - (yb - yt) * 0.05}'
     bot = f'{x0 - 10},{yb + 0.3 * (yb-yt)} {x1 + 10},{yt + 0.3*(yb-yt)} {x1 + 10},{H + 10} {x0 - 10},{H + 10}'
     # cut line through the middle: from (x0, y-0.15x) to (x1, y-0.85x)
-    ya, yb2 = y - m['x'] * 0.18, y - m['x'] * 0.82
-    gap = 2.6
+    ya, yb2 = y - m['x'] * 0.22, y - m['x'] * 0.78
+    gap = 4.2
     def line_y(xx, off):
         return ya + (yb2 - ya) * (xx - x0) / (x1 - x0) + off
     top = f'{x0-20},-20 {x1+20},-20 {x1+20},{line_y(x1+20,-gap):.1f} {x0-20},{line_y(x0-20,-gap):.1f}'
     bot = f'{x0-20},{line_y(x0-20,gap):.1f} {x1+20},{line_y(x1+20,gap):.1f} {x1+20},{H+20} {x0-20},{H+20}'
-    uid = 'c' + color.strip('#') + (bg or 'x').strip('#')
+    _cut_n[0] += 1
+    uid = f'h{_cut_n[0]}'
     body = (f'<defs><clipPath id="t{uid}"><polygon points="{top}"/></clipPath>'
             f'<clipPath id="b{uid}"><polygon points="{bot}"/></clipPath></defs>'
             f'<path fill="{color}" d="{d1}"/>'
             f'<circle cx="{dot_cx:.2f}" cy="{dot_cy:.2f}" r="{r:.2f}" fill="{dot or color}"/>'
-            f'<g clip-path="url(#t{uid})"><path fill="{color}" transform="translate(5.5 -1.2)" d="{d3}"/></g>'
+            f'<g clip-path="url(#t{uid})"><path fill="{color}" transform="translate(7.5 -2)" d="{d3}"/></g>'
             f'<g clip-path="url(#b{uid})"><path fill="{color}" d="{d3}"/></g>')
     return svg(W, H, body, bg, 'rubens.cut')
 
@@ -198,10 +232,10 @@ def lockup(color, bg=None):
     sym = size * 1.28
     gap = size * 0.34
     pad = 6
-    d, w = text_path('Ruben Svanerud', 700, size, tracking=-0.035, x=pad + sym + gap, y=pad + sym / 2 + m['cap'] / 2)
+    tb, w = cut_first_glyph('Ruben Svanerud', 700, size, -0.035, pad + sym + gap, pad + sym / 2 + m['cap'] / 2, color)
     W = pad * 2 + sym + gap + w
     H = pad * 2 + sym
-    body = f'<path fill="{color}" d="{symbol_path(pad, pad, sym)}"/><path fill="{color}" d="{d}"/>'
+    body = f'<path fill="{color}" d="{symbol_path(pad, pad, sym)}"/>' + tb
     return svg(W, H, body, bg, 'Ruben Svanerud')
 
 
@@ -216,11 +250,11 @@ def lockup_stacked(color, bg=None):
     sym = W * 0.42
     top = pad
     ty = top + sym + size * 0.42 + m['cap']
-    d1, _ = text_path('Ruben', 700, size, tracking=-0.035, x=pad + (W - 2 * pad - w1) / 2, y=ty)
+    b1, _ = cut_first_glyph('Ruben', 700, size, -0.035, pad + (W - 2 * pad - w1) / 2, ty, color)
     d2, _ = text_path('Svanerud', 700, size, tracking=-0.035, x=pad + (W - 2 * pad - w2) / 2, y=ty + lh)
     H = ty + lh + m['desc'] * 0.5 + pad
-    body = (f'<path fill="{color}" d="{symbol_path((W - sym) / 2, top, sym)}"/>'
-            f'<path fill="{color}" d="{d1} {d2}"/>')
+    body = (f'<path fill="{color}" d="{symbol_path((W - sym) / 2, top, sym)}"/>' + b1 +
+            f'<path fill="{color}" d="{d2}"/>')
     return svg(W, H, body, bg, 'Ruben Svanerud')
 
 

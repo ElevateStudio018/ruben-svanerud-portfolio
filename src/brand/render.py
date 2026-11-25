@@ -72,6 +72,19 @@ APPLICATIONS = {
           <div><p style="font-size:48px;font-weight:700;letter-spacing:-.03em;color:{C['forest']};line-height:1.05">Ruben Svanerud</p>
           <p class="mono" style="font-size:26px;color:{C['pine']};margin-top:6px">Film &amp; photo · rubens.cut</p></div>
         </div></div>"""),
+    'lower-third-preview': (1920, 1080, False, f"""
+      <div style="position:relative;width:1920px;height:1080px;overflow:hidden">
+        <img src="{IMG('pop-station', 1456)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+        <div style="position:absolute;left:96px;bottom:110px;display:flex;align-items:center;gap:26px;background:{C['cream']};border-radius:999px;padding:22px 44px 22px 26px">
+          <div style="width:84px;height:84px;border-radius:50%;background:{C['forest']};display:grid;place-items:center"><div style="width:50px">{inline('symbol', C['cream'])}</div></div>
+          <div><p style="font-size:48px;font-weight:700;letter-spacing:-.03em;color:{C['forest']};line-height:1.05">Ruben Svanerud</p>
+          <p class="mono" style="font-size:26px;color:{C['pine']};margin-top:6px">Film &amp; photo · rubens.cut</p></div>
+        </div></div>"""),
+    'watermark-preview': (1080, 1080, False, f"""
+      <div style="position:relative;width:1080px;height:1080px;overflow:hidden">
+        <img src="{IMG('dive-wreck', 2072)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+        <div style="position:absolute;right:56px;bottom:56px;width:150px;opacity:.85">{inline('symbol', C['cream'])}</div>
+      </div>"""),
     'watermark': (600, 600, True, f"""
       <div style="width:600px;height:600px;display:grid;place-items:center"><div style="width:440px;opacity:.85">{inline('symbol', C['cream'])}</div></div>"""),
     'business-card-front': (1050, 600, False, f"""
